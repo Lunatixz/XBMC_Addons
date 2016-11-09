@@ -150,6 +150,7 @@ def BRANDORCOUNTRYYEAR(url):
 def VIDEOLINKS(url,name,total=1):
         link = openURL(url)
         soup = BeautifulSoup(link)
+        # print soup
         found = False
         #GET THE VIDEO LINKS FROM THE PAGE, IF ANY
         #get the image
@@ -164,7 +165,8 @@ def VIDEOLINKS(url,name,total=1):
             vid[0]=replaceXmlEntities(vid[0])
             vid[0]=re.sub('http.*?clip":{"url":','/',vid[0])
             vid[0]=re.search('h.*?.mp4', vid[0]).group()
-            
+            vid = vid[0]
+
         #get alternate high res links if any
         vids=soup.find('ul',"resolutions")
         if vids:
@@ -180,9 +182,13 @@ def VIDEOLINKS(url,name,total=1):
                             break
                     else:
                         addLink(url.string,url['name'],image[0],total)
-        # if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" and found == True:
-            # return
-        # addLink('360p',vid[0],image[0])
+        if (xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" and found == True):
+            return
+            
+        if not vid:
+            if len(re.compile("url:'(.+?).mp4',").findall(link)) > 0:
+                vid=((re.compile("url:'(.+?).mp4',").findall(link))[0]) + '.mp4'
+        addLink('360p',vid,image[0])
         
     
 def LISTCOUNTRIES(url, year=False):
