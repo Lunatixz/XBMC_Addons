@@ -78,7 +78,7 @@ def fillMenu():
     addDir('Browse Commercials','http://www.ispot.tv/browse',1)
     addDir('Event Commercials','http://www.ispot.tv/events',1)
     
-def parseYoutubeDuration(duration):
+def parseDuration(duration):
     duration = 'P'+duration
     print duration
     """ Parse and prettify duration from youtube duration format """
@@ -136,7 +136,7 @@ def PageParse(url):
             ##adDict = (re.compile("data-ad='(.+?)}'").findall(link))[0] + '}'
             
             try:
-                duration = parseYoutubeDuration((re.compile('<meta itemprop="duration" content="(.+?)" />').findall(link))[0])
+                duration = parseDuration((re.compile('<meta itemprop="duration" content="(.+?)" />').findall(link))[0])
             except:                
                 duration = 30
 
@@ -176,12 +176,31 @@ def get_params():
                 param[splitparams[0]]=splitparams[1]             
     return param
 
-def getVideo(url):
-    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, xbmcgui.ListItem(path=url))
+def cleanString(string):
+    newstr = uni(string)
+    newstr = newstr.replace('&', '&amp;')
+    newstr = newstr.replace('>', '&gt;')
+    newstr = newstr.replace('<', '&lt;')
+    newstr = newstr.replace('"', '&quot;')
+    return uni(newstr)
+
+def uncleanString(string):
+    newstr = uni(string)
+    newstr = newstr.replace('&amp;', '&')
+    newstr = newstr.replace('&gt;', '>')
+    newstr = newstr.replace('&lt;', '<')
+    newstr = newstr.replace('&quot;', '"')
+    return uni(newstr)
+        
+def uni(string):
+    if isinstance(string, basestring):
+        if isinstance(string, unicode):
+           string = string.encode('utf-8', 'ignore' )
+    return string
     
 def addLink(name,url,infoList=False,infoArt=False,total=0):
     log('addLink')
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(2)+"&name="+urllib.quote_plus(name)
+    name = uncleanString(name)
     liz=xbmcgui.ListItem(name)
     liz.setProperty('IsPlayable', 'true')
     if infoList == False:
@@ -193,11 +212,11 @@ def addLink(name,url,infoList=False,infoArt=False,total=0):
     else:
         liz.setArt(infoArt)
     liz.addStreamInfo('video', {})
-    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,totalItems=total)
+    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,totalItems=total)
         
 def addDir(name,url,mode,infoList=False,infoArt=False):
     log('addDir')
-    name = '- %s'%name
+    name = '- %s'%uncleanString(name)
     u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
     liz=xbmcgui.ListItem(name)
     liz.setProperty('IsPlayable', 'false')
@@ -232,8 +251,8 @@ log("Name: "+str(name))
 
 if mode==None: PageParse('http://www.ispot.tv/browse')#fillMenu()
 elif mode == 1: PageParse(url)
-elif mode == 2: getVideo(url)
 
 xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_NONE )
+xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL )
 xbmcplugin.setContent(int(sys.argv[1]), 'video')
 xbmcplugin.endOfDirectory(int(sys.argv[1]),cacheToDisc=True) # End List

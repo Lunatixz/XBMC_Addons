@@ -114,7 +114,7 @@ def BRANDORCOUNTRYPAGE(url):
                     adurl=ad.a["href"]
                     thumbnail=ad.a.img["src"]
                     if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
-                        VIDEOLINKS(baseurl+adurl,name)
+                        VIDEOLINKS(baseurl+adurl,name,len(adverts))
                     else:
                         addDir(name,baseurl+adurl,2,thumbnail)
 
@@ -147,7 +147,7 @@ def BRANDORCOUNTRYYEAR(url):
                 # nextpage=baseurl+nextpage[0]
                 # addDir("Next Page >>",nextpage,1)
 
-def VIDEOLINKS(url,name):
+def VIDEOLINKS(url,name,total=1):
         link = openURL(url)
         soup = BeautifulSoup(link)
         found = False
@@ -176,10 +176,10 @@ def VIDEOLINKS(url,name):
                     if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
                         if url.string.lower() == REAL_SETTINGS.getSetting('limit_preferred_resolution').lower():
                             found = True
-                            addLink(name,url['name'],image[0])
+                            addLink(name,url['name'],image[0],total)
                             break
                     else:
-                        addLink(url.string,url['name'],image[0])
+                        addLink(url.string,url['name'],image[0],total)
         # if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" and found == True:
             # return
         # addLink('360p',vid[0],image[0])
@@ -252,17 +252,17 @@ def get_params():
                     param[splitparams[0]]=splitparams[1]             
         return param
         
-def addLink(name,url,iconimage=THUMB):
+def addLink(name,url,iconimage=THUMB,total=0):
         name = uncleanString(name)
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setProperty('IsPlayable', 'true')
         liz.setProperty('fanart_image', FANART)
         liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,totalItems=total)
         
 def addDir(name,url,mode,iconimage=THUMB):
         u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        name = uncleanString(name)
+        name = '- %s'%uncleanString(name)
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
         liz.setProperty('IsPlayable', 'false')
         liz.setProperty('fanart_image', FANART)
