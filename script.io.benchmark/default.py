@@ -46,11 +46,11 @@ WRITE_MB       = 128    # total MBs Wrote during test
 WRITE_BLOCK_KB = 1024   # KBs in each write block
 READ_BLOCK_B   = 512    # bytes in each read block (high values may lead to
                         # invalid results because of system I/O scheduler        
-                        
-ADDON_FOLDER   = os.path.join(os.path.splitdrive(xbmc.translatePath(ADDON_PATH))[0],'') + '\\'
-SETTINGS_FOLDER= os.path.join(os.path.splitdrive(xbmc.translatePath(SETTINGS_LOC))[0],'') + '\\'
-ADDON_FILE     = os.path.join(ADDON_FOLDER,'test.tmp')   # file must be at drive under test
-SETTINGS_FILE  = os.path.join(SETTINGS_FOLDER,'test.tmp') # file must be at drive under test
+                        # file must be at drive under test
+ADDON_FILE   = os.path.join((xbmc.translatePath(ADDON_PATH)),'test.tmp')
+SETTINGS_FILE= os.path.join((xbmc.translatePath(SETTINGS_LOC)),'test.tmp')
+if xbmcvfs.exists(SETTINGS_LOC) == False:
+    xbmcvfs.mkdirs(SETTINGS_LOC)
 
 def log(msg, level = xbmc.LOGDEBUG):
     xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + str(msg), level)
@@ -147,6 +147,7 @@ okay('Kodi is about to perform a benchmark','Please do not interfere','Results w
 progress = xbmcgui.DialogProgress()
 progress.create(ADDON_NAME,'','','') 
 result = ''
+
 for FILE in list(set(TEST_PATHS)): 
     try:
         result += ('[COLOR=gold]%s[/COLOR]\n'%(xbmc.translatePath(FILE)))
@@ -183,12 +184,14 @@ for FILE in list(set(TEST_PATHS)):
                    (READ_BLOCK_B/(1024*1024*min(read_results))), (READ_BLOCK_B/(1024*1024*max(read_results)))))
 
         progress.update(0)
-    except:
-        result += ('\n[COLOR=red]Benchmark Failed![/COLOR]\n')
+    except Exception,e:
+        result += ('\n[COLOR=red]Benchmark Failed![/COLOR]')
+        result += ('\n[COLOR=red]%s[/COLOR]\n'%str(e))
         
     result += ('[COLOR=gold]---------------------------------------------------------------------------------------------------------------------------------------------------------------[/COLOR]\n')
         
 result += ('[COLOR=red]RED=BAD[/COLOR][COLOR=gray]----[/COLOR][COLOR=orange]ORANGE=AVERAGE[/COLOR][COLOR=gray]----[/COLOR][COLOR=green]GREEN=GREAT[/COLOR]')
+
 for FILE in TEST_PATHS:
     for i in range(3):
         if i == 3:

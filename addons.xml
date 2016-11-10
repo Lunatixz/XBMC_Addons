@@ -215,7 +215,7 @@
     </extension>
 </addon>
 
-<addon id="script.io.benchmark" name="I/O Benchmark" version="1.0.6" provider-name="Lunatixz">
+<addon id="script.io.benchmark" name="I/O Benchmark" version="1.0.7" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
     </requires>
