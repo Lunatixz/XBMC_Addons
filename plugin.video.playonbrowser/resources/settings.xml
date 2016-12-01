@@ -6,22 +6,15 @@
         <setting label="42005" type="lsep"/>
         <setting label="42006" type="folder" source="video" id="playonUPNPid" default=""/>
         <setting label="42004" type="lsep"/>
-        <setting label="42007" type="bool"  id="debug" default="false"/>
-        <setting label="42008" type="bool"  id="cache" default="true"/>
-        <setting label="42009" type="bool"  id="meta" default="false"/>
-    </category>
-    <category label="44001">
         <setting label="44002" type="bool"  id="useUPNP" default="true"/>
         <setting label="44003" type="bool"  id="playDirect" default="true"/>
-    </category> 
+        <setting label="42009" type="bool"  id="meta" default="false"/>
+        <setting label="42007" type="bool"  id="debug" default="false"/>
+    </category>
     <category label="42097">   
         <setting id=""  enable="false" option="hidden" type="text" default="Coming Soon!" />
     </category> 
-    <category label="45001">   
-        <setting id="TMDB_API_KEY"  enable="false" option="hidden" type="text" default="9c47d05a3f5f3a00104f6586412306af" />
-        <setting id="TVDB_API_KEY"  enable="false" option="hidden" type="text" default="078845CE15BC08A7" />
-        <setting id="FANARTTV_API_KEY"  enable="false" option="hidden" type="text" default="0da4365d363db853f10fd800b6a245e5" />      
-    </category> 
+    <setting id="TMDB_API_KEY" visible="false" enable="false" option="hidden" type="text" default="9c47d05a3f5f3a00104f6586412306af" /> 
     <!-- <category label="43001"> -->
     <!-- </category> -->
 </settings>

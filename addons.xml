@@ -80,25 +80,30 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.playonbrowser" name="Playon Browser" version="1.0.13" provider-name="Lunatixz, Sytone">
-  <requires>
-    <import addon="xbmc.python" version="2.14.0"/>
-    <import addon="script.module.metahandler" version="2.9.0"/>
-    <import addon="script.common.plugin.cache" version="2.5.5"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_US">Allows you to browse m.playon.tv from your remote.</summary>
-    <description lang="en_US">Allows you to interact with the playon web interface using the standard controls in kodi.</description>
-    <disclaimer lang="en_US">Requires Playon Software</disclaimer>
-    <platform>all</platform>
-    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-    <forum>http://forum.kodi.tv/showthread.php?tid=233136</forum>
-    <website>www.playon.tv</website>
-    <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.playonbrowser</source>
-  </extension>
+<addon id="plugin.video.playonbrowser" name="Playon Browser" version="1.0.15" provider-name="Lunatixz, Sytone">
+    <requires>
+        <import addon="xbmc.python" version="2.14.0"/>
+        <import addon="script.module.metahandler" version="2.9.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_US">Allows you to browse m.playon.tv from Kodi.</summary>
+        <description lang="en_US">Allows you to interact with the playon web interface using the standard kodi controls.</description>
+        <disclaimer lang="en_US">Requires Playon Software</disclaimer>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+        <forum>http://forum.kodi.tv/showthread.php?tid=233136</forum>
+        <website>www.playon.tv</website>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.playonbrowser</source>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
 </addon>
 
 <addon id="plugin.video.pseudo.companion" version="0.0.13" name="PseudoCompanion" provider-name="Lunatixz">
@@ -250,6 +255,24 @@
     </extension>
 </addon>
 
+<addon id="script.video.mirror.service" version="0.0.1" name="Video Mirror" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.14.0"/>
+        <import addon="script.module.requests" version="2.7.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.service" library="service.py" start="startup"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Mirror playback to Multiple Kodi instances</summary>
+        <description lang="en">Create a Multiroom Kodi experience, Mirror one Kodi to Multiple instances throughout your house </description>
+        <disclaimer lang="en" >This software is a BETA release, bugs maybe common until final release.</disclaimer>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+    </extension>
+</addon>
+
 <addon id="script.module.pyfscache" version="0.9.14" name="File Cache" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.14.0" />
@@ -269,7 +292,7 @@
 
 <addon id="script.module.pyhdhr" version="0.0.1" name="pyHDHR" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.14.0" />
+        <import addon="xbmc.python" version="2.24.0" />
         <import addon="script.module.simplejson" version="3.3.0"/>
     </requires>
     <extension library="lib" point="xbmc.python.module" />
@@ -290,7 +313,7 @@
 
 <addon id="script.module.pylast" version="0.0.2" name="pyLastFM" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.14.0" />
+        <import addon="xbmc.python" version="2.24.0" />
         <import addon="script.module.six" version="0.0.1" />
     </requires>
     <extension library="lib" point="xbmc.python.module" />
@@ -311,7 +334,7 @@
 
 <addon id="script.module.pyqrcode" version="0.0.1" name="pyQRcode" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.14.0" />
+        <import addon="xbmc.python" version="2.24.0" />
     </requires>
     <extension library="lib" point="xbmc.python.module" />
     <extension point="xbmc.addon.metadata">
@@ -438,24 +461,6 @@
         <provides>executable</provides>
     </extension>
     <extension point="xbmc.service" library="service.py" start="startup"/>
-</addon>
-
-<addon id="script.video.mirror.service" version="0.0.1" name="Video Mirror" provider-name="Lunatixz">
-    <requires>
-        <import addon="xbmc.python" version="2.14.0"/>
-        <import addon="script.module.requests" version="2.7.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.service" library="service.py" start="startup"/>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Mirror playback to Multiple Kodi instances</summary>
-        <description lang="en">Create a Multiroom Kodi experience, Mirror one Kodi to Multiple instances throughout your house </description>
-        <disclaimer lang="en" >This software is a BETA release, bugs maybe common until final release.</disclaimer>
-        <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-    </extension>
 </addon>
 
 <addon id="webinterface.ptvlmanager" name="PTVL Manager" version="0.1.0a" provider-name="Peppy, Lunatixz">

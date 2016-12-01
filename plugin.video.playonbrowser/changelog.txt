@@ -1,3 +1,9 @@
+v1.0.15
+- Improved upnpid detection
+
+v1.0.14
+- Improved playback
+
 v1.0.13
 - Auto detect upnp id change.
 - Enhanced Metadata & Artwork w/trakt scrobbling support (When available).
