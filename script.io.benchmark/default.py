@@ -47,6 +47,7 @@ WRITE_BLOCK_KB = 1024   # KBs in each write block
 READ_BLOCK_B   = 512    # bytes in each read block (high values may lead to
                         # invalid results because of system I/O scheduler        
                         # file must be at drive under test
+                        
 ADDON_FILE   = os.path.join((xbmc.translatePath(ADDON_PATH)),'test.tmp')
 SETTINGS_FILE= os.path.join((xbmc.translatePath(SETTINGS_LOC)),'test.tmp')
 if xbmcvfs.exists(SETTINGS_LOC) == False:
@@ -184,6 +185,8 @@ for FILE in list(set(TEST_PATHS)):
                    (READ_BLOCK_B/(1024*1024*min(read_results))), (READ_BLOCK_B/(1024*1024*max(read_results)))))
 
         progress.update(0)
+        REAL_SETTINGS.setSetting("rbBench", '[COLOR={0}]{1:.2f} MB/s[/COLOR]'.format(WCOLOR, WRITE_MB/sum(write_results)))
+        REAL_SETTINGS.setSetting("wbBench", '[COLOR={0}]{1:.2f} MB/s[/COLOR]'.format(RCOLOR, WRITE_MB/sum(read_results)))
     except Exception,e:
         result += ('\n[COLOR=red]Benchmark Failed![/COLOR]')
         result += ('\n[COLOR=red]%s[/COLOR]\n'%str(e))

@@ -220,6 +220,30 @@
     </extension>
 </addon>
 
+<addon id="script.enableit" version="0.0.2" name="Enable it!" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+    </requires>
+    <extension point="xbmc.python.script" defaultresolution="720p" library="default.py"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Enable, disabled plugins...</summary>
+        <description lang="en">Kodi Krypton 17.x disables all plugins manually installed, This plugin enables all plugins within user parameters.</description>
+        <disclaimer lang="en">This software is a BETA release, bugs maybe common until final release.</disclaimer>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/script.enableit</source>
+        <email>pseudotvlive@gmail.com</email>
+        <website>http://pseudotvlive.com</website>
+        <forum>http://pseudotvlive.com</forum>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="script.io.benchmark" name="I/O Benchmark" version="1.0.7" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -426,6 +450,24 @@
         <email>pseudotvlive@gmail.com</email>
         <website>http://www.pseudotvlive.com</website>
         <forum>http://pseudotvlive.com/index.php/forum</forum>
+    </extension>
+</addon>
+
+<addon id="script.pystone.benchmark" name="CPU Benchmark" version="1.1.0" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Test your devices read/write performance.</summary>
+        <description lang="en"></description>
+        <license>The MIT License (MIT)</license>
+        <platform>all</platform>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/script.io.benchmark</source>
+        <email>pseudotvlive@gmail.com</email>
+        <forum>http://forum.kodi.tv/</forum>
     </extension>
 </addon>
 
