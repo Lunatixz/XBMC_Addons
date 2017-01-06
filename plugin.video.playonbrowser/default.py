@@ -1,4 +1,4 @@
-#   Copyright (C) 2016 Lunatixz
+#   Copyright (C) 2017 Lunatixz
 #
 #
 # This file is part of Playon Browser
@@ -42,12 +42,11 @@ PLAYON_ICON   = '/images/play_720.png'
 PLAYON_DATA   = '/data/data.xml'
 BASE_URL      = sys.argv[0]
 BASE_HANDLE   = int(sys.argv[1])
-args      = urlparse.parse_qs(sys.argv[2][1:])
+args          = urlparse.parse_qs(sys.argv[2][1:])
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 TIMEOUT       = 15
 random.seed()
 socket.setdefaulttimeout(TIMEOUT)
-
 playDirect       = REAL_SETTINGS.getSetting("playDirect") == "true"
 if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True":
     playDirect   = False
@@ -55,6 +54,7 @@ if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True":
 kodiLibrary      = False #todo strm contextMenu
 debug            = REAL_SETTINGS.getSetting("debug") == "true"
 useUPNP          = REAL_SETTINGS.getSetting("useUPNP") == "true"
+cache            = REAL_SETTINGS.getSetting('cache') == "true"
 
 try:
     from metahandler import metahandlers
@@ -63,6 +63,14 @@ try:
 except Exception,e:
     print str(e)
     Meta_Enabled = False
+    
+# Commoncache plugin import
+try:
+    import StorageServer
+except Exception,e:
+    import storageserverdummy as StorageServer
+    cache = False 
+cachedata = StorageServer.StorageServer(ADDON_PATH,1)
 
 displayCategories = {'MoviesAndTV': 3,
                     'Comedy': 128,
@@ -184,17 +192,39 @@ def addLink(name,description,u,thumb=ICON,ic=ICON,fan=FANART,infoList=False,info
         log('addLink: infoList = True')
         liz.setInfo(type="Video", infoLabels=infoList)
         liz.setArt(infoArt)
-        videoStream = { 'codec': 'h264', 
-                              'width' : 1280, 
-                              'height' : 720, 
-                              'aspect' : 1.78 }
-
-        audioStream = { 'codec': 'aac', 'language' : 'en'}
-        subtitleStream = { 'language' : 'en'}
-        liz.addStreamInfo('video', videoStream)
-        liz.addStreamInfo('audio', audioStream)
-        liz.addStreamInfo('subtitle', subtitleStream)
     xbmcplugin.addDirectoryItem(handle=BASE_HANDLE,url=u,listitem=liz,totalItems=total)
+              
+def get_xml(url):
+    if cache == True:
+        try:
+            result = cachedata.cacheFunction(url)
+            if len(result) == 0 or result == 'null':
+                raise
+        except:
+            result = get_xml_NEW(url)
+    else:
+        result = get_xml_NEW(url)
+    if not result:
+        result = 'null'
+    return result  
+         
+def get_xml_NEW(url):
+    log('get_xml: ' + url)
+    """ This will pull down the XML content and return a ElementTree. """
+    try:
+        usock = urllib2.urlopen(url)
+        response = usock.read()
+        usock.close()
+        return ElementTree.fromstring(response)
+    except: return False 
+
+def get_argument_value(name):
+    log('get_argument_value: ' + name)
+    """ pulls a value out of the passed in arguments. """
+    if args.get(name, None) is None:
+        return None
+    else:
+        return args.get(name, None)[0]
 
 def build_url(query):
     log('build_url')
@@ -218,25 +248,7 @@ def build_playon_search_url(id, searchterm):
     searchterm = urllib.quote_plus(searchterm)
     log('build_playon_search_url: '+ id + "::" + searchterm)
     return playonInternalUrl + PLAYON_DATA + "?id=" + id + "&searchterm=dc:description%20contains%20" + searchterm
-        
-def get_xml(url):
-    log('get_xml: ' + url)
-    """ This will pull down the XML content and return a ElementTree. """
-    try:
-        usock = urllib2.urlopen(url)
-        response = usock.read()
-        usock.close()
-        return ElementTree.fromstring(response)
-    except: return False 
-
-def get_argument_value(name):
-    log('get_argument_value: ' + name)
-    """ pulls a value out of the passed in arguments. """
-    if args.get(name, None) is None:
-        return None
-    else:
-        return args.get(name, None)[0]
-
+ 
 def build_menu_for_mode_none():
     """
         This generates a static structure at the top of the menu tree. 
@@ -248,7 +260,7 @@ def build_menu_for_mode_none():
         url = build_url({'mode': 'category', 'category':displayCategories[key]})
         image = playonInternalUrl + displayImages[key]
         addDir(displayTitles[key],displayTitles[key],url,image,image)   
-    xbmcplugin.endOfDirectory(BASE_HANDLE)
+    xbmcplugin.endOfDirectory(BASE_HANDLE, cacheToDisc=True)
 
 def build_menu_for_mode_category(category):
     log('build_menu_for_mode_category:' + category)
@@ -289,11 +301,11 @@ def build_menu_for_mode_category(category):
                                  'foldername': name, 
                                  'href': group.attrib.get('href'), 
                                  'nametree': name})
-                addDir(name,name,url,image,image)  
-        xbmcplugin.endOfDirectory(BASE_HANDLE)
+                addDir(name,name,url,image,image)
+        xbmcplugin.endOfDirectory(BASE_HANDLE, cacheToDisc=True)
     except:
         pass
-        
+
 def build_menu_for_search(xml):
     log('build_menu_for_search')
     ranNum = random.randrange(9)
@@ -324,8 +336,9 @@ def build_menu_for_search(xml):
             # This is the top group node, just need to check if we can search. 
             if group.attrib.get('searchable') != None:
                 # We can search at this group level. Add a list item for it. 
-                name = "Search" #TODO: Localize
-                url = build_url({'mode': 'search', 'id': group.attrib.get('id')})
+                name  = "Search" #TODO: Localize
+                url   = build_url({'mode': 'search', 'id': group.attrib.get('id')})
+                image = playonInternalUrl + folderIcon(ranNum)
                 addDir(name,name,url,image,image)  
             else:
                 # Build up the name tree.
@@ -345,17 +358,16 @@ def build_menu_for_search(xml):
                         image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')
 
                 url = build_url({'mode': group.attrib.get('type'), 
-                                    'foldername': name, 
-                                    'href': group.attrib.get('href'), 
-                                    'image': image, 
-                                    'desc': desc, 
-                                    'parenthref': group.attrib.get('href')}) #,'nametree': nametree + '/' + name
-
-                getMeta(nametree, name, desc, url, image, group.attrib.get('type'),cnt=len(xml.getiterator('group')))
+                                'foldername': name, 
+                                'href': group.attrib.get('href'), 
+                                'image': image, 
+                                'desc': desc, 
+                                'parenthref': group.attrib.get('href')}) #,'nametree': nametree + '/' + name
+                getMeta('null', name, desc, url, image, group.attrib.get('type'),cnt=len(xml.getiterator('group')))
     except:
         pass
-    xbmcplugin.endOfDirectory(BASE_HANDLE)
-
+    xbmcplugin.endOfDirectory(BASE_HANDLE, cacheToDisc=True)
+                        
 def build_menu_for_mode_folder(href, foldername, nametree):
     log("Entering build_menu_for_mode_folder")
     ranNum = random.randrange(9)
@@ -414,11 +426,10 @@ def build_menu_for_mode_folder(href, foldername, nametree):
                                     'desc': desc, 
                                     'parenthref': href, 
                                     'nametree': nametree + '/' + name})
-                
                 getMeta(nametree, name, desc, url, image, group.attrib.get('type'),cnt=len(get_xml(build_playon_url(href)).getiterator('group')))
         except Exception,e:
             log("Entering build_menu_for_mode_folder, failed! " + str(e))
-    xbmcplugin.endOfDirectory(BASE_HANDLE)
+    xbmcplugin.endOfDirectory(BASE_HANDLE, cacheToDisc=True)
         
 def generate_list_items(xml, href, foldername, nametree):
     log("Entering generate_list_items")
@@ -454,7 +465,7 @@ def generate_list_items(xml, href, foldername, nametree):
             getMeta(nametree, name, desc, url, image, group.attrib.get('type'),cnt=len(xml.getiterator('group')))
     except:
         pass
-    xbmcplugin.endOfDirectory(BASE_HANDLE)
+    xbmcplugin.endOfDirectory(BASE_HANDLE, cacheToDisc=True)
        
 def getTitleYear(showtitle, showyear=0):  
     # extract year from showtitle, merge then return
@@ -487,8 +498,7 @@ def getTitleYear(showtitle, showyear=0):
 def SEinfo(SEtitle):
     season = 0
     episode = 0
-    title = ''
-    
+    title         = '' 
     titlepattern1 = ' '.join(SEtitle.split(' ')[1:])
     titlepattern2 = re.search('[0-9]+x[0-9]+ (.+)', SEtitle)
     titlepattern3 = re.search('s[0-9]+e[0-9]+ (.+)', SEtitle)
@@ -501,22 +511,21 @@ def SEinfo(SEtitle):
             except:
                 title = titlepattern[n]
             break
-    pattern1 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s 01e 02""", re.VERBOSE)
-    pattern2 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s01e 02""", re.VERBOSE)
-    pattern3 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:e|x|episode|\n)(?P<ep>\d+) # s 01e02""", re.VERBOSE)
-    pattern4 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:e|x|episode|\n)(?P<ep>\d+) # s01e02""", re.VERBOSE)
-    pattern5 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?P<ep>\d+) # s01 random123 e02""", re.VERBOSE)
+    pattern1 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s 01e 02"""                 , re.VERBOSE)
+    pattern2 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s01e 02"""                        , re.VERBOSE)
+    pattern3 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:e|x|episode|\n)(?P<ep>\d+) # s 01e02"""                        , re.VERBOSE)
+    pattern4 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:e|x|episode|\n)(?P<ep>\d+) # s01e02"""                               , re.VERBOSE)
+    pattern5 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?P<ep>\d+) # s01 random123 e02"""              , re.VERBOSE)
     pattern6 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s 01 random123 e 02""", re.VERBOSE)
-    pattern7 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?P<ep>\d+) # s 01 random123 e02""", re.VERBOSE)
-    pattern8 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s01 random123 e 02""", re.VERBOSE)
+    pattern7 = re.compile(r"""(?:s|season)(?:\s)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?P<ep>\d+) # s 01 random123 e02"""       , re.VERBOSE)
+    pattern8 = re.compile(r"""(?:s|season)(?P<s>\d+)(?:.*)(?:e|x|episode|\n)(?:\s)(?P<ep>\d+) # s01 random123 e 02"""       , re.VERBOSE)
     patterns = [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7, pattern8 ]
 
     for idx, p in enumerate(patterns):
         m = re.search(p, SEtitle)
         if m:
             season = int( m.group('s'))
-            episode = int( m.group('ep'))
-            
+            episode = int( m.group('ep')) 
     log("SEinfo, return " + str(season) +', '+ str(episode) +', '+ title) 
     return season, episode, title
     
@@ -816,3 +825,5 @@ elif mode == 'video' : # Video link from Addon or STRM. Parse and play.
     except Exception:
         src, name, art, desc = parseURL(nametree)  
     direct_play(nametree, src, name, art, desc)  
+    
+#todo cache build folder and change from metahandler to artutil
