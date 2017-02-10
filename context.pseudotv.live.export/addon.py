@@ -1,4 +1,4 @@
-#   Copyright (C) 2015 Kevin S. Graer
+#   Copyright (C) 2017 Kevin S. Graer
 #
 #
 # This file is part of PseudoTV Live.
@@ -20,10 +20,10 @@ import xbmc, xbmcaddon
 
 if __name__ == '__main__':
     # PseudoTV Live Globals
-    ADDON_ID = 'script.pseudotv.live'
+    ADDON_ID      = 'script.pseudotv.live'
     REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
-    ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
-    ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
-    ADDON_PATH = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
+    ADDON_ID      = REAL_SETTINGS.getAddonInfo('id')
+    ADDON_NAME    = REAL_SETTINGS.getAddonInfo('name')
+    ADDON_PATH    = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
     ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
     xbmc.executebuiltin("RunScript("+ADDON_PATH+"/capture.py)")
