@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
+<addon id="context.pseudotv.live.export" name="PseudoTV Live Export" version="1.1.9" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.14.0"/>
     </requires>
