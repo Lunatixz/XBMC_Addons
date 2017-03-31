@@ -33,11 +33,11 @@ msgid "Options:"
 msgstr ""
 
 msgctxt "#44003"
-msgid "Play Direct Link [Fast playback/Tokens expire]"
+msgid "Play Direct Link [Faster playback but tokens expire]"
 msgstr ""
 
 msgctxt "#42009"
-msgid "Enable Metadata [incl. Trakt scrobbling]"
+msgid "Enable Metadata w/Trakt scrobbling [Slower navigation]"
 msgstr ""
 
 msgctxt "#42008"
