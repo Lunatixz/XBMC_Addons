@@ -428,7 +428,7 @@ class Playon:
                         if group.attrib.get('art') == None:
                             image = playonInternalUrl + folderIcon(ranNum)
                         else:
-                            image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')  
+                            image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')
                     elif group.attrib.get('type') == 'video':
                         if group.attrib.get('art') == None:
                             image = playonInternalUrl + PLAYON_ICON
@@ -528,24 +528,6 @@ class Playon:
         self.getMeta(nametree, name, desc, url, image, 'player')
 
 
-    def durationInSeconds(self, dur):
-        log("durationInSeconds")
-        try:
-            dur = int(dur)
-        except:
-            return 0
-            
-        if len(str(dur)) in [1,2]:
-            return dur * 60
-        elif len(str(dur)) == 3:
-            ndur = dur * 60
-            if ndur > 16000:
-                return dur
-            else:
-                return ndur
-        return dur
-        
-        
     def parseMissingMeta(self, items, type='episode'):
         log("parseMissingMeta, type = " + type)
         dur = 0
@@ -600,7 +582,11 @@ class Playon:
             items['art']['poster'] = meta.get('cover_url_url',items['art']['icon'])
             items['art']['fanart'] = meta.get('backdrop_url',items['art']['icon'])
             items['art']['banner'] = meta.get('banner_url',items['art']['icon'])
-            dur = self.durationInSeconds(int(meta.get('Duration.Minutes','') or meta.get('runtime','') or meta.get('duration','0') or '0'))
+            dur = int(meta.get('duration','0') or '0')
+            if len(str(dur)) <= 4:
+                dur = dur * 60
+            elif dur == 0 and ('Duration.Minutes' in meta or 'runtime' in meta):
+                dur = int(meta.get('Duration.Minutes','') or meta.get('runtime','') or '0') * 60
         return dur, items, items['art']
            
            
@@ -635,7 +621,7 @@ class Playon:
             m = re.search(p, SEtitle)
             if m:
                 season = int( m.group('s'))
-                episode = int( m.group('ep')) 
+                episode = int( m.group('ep'))
         log("parseSE, return " + str(season) +', '+ str(episode)) 
         return season, episode
   
@@ -697,6 +683,10 @@ class Playon:
                     if 'movie' in nametree[n].lower() :
                         type = 'movie'
                     elif 'tv' in nametree[n].lower() :
+                        type = 'episode'
+                    elif 'series' in nametree[n].lower() :
+                        type = 'episode'
+                    elif 'shows' in nametree[n].lower() :
                         type = 'episode'
                     elif 'season' in nametree[n].lower() :
                         type = 'episode'
