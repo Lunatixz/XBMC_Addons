@@ -76,7 +76,7 @@
 
 <addon id="plugin.video.playonbrowser" name="Playon Browser" version="1.0.20" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
         <import addon="script.module.metahandler" version="2.9.0"/>
