@@ -290,8 +290,7 @@ class Playon:
             This generates a menu for a selected category in the main menu. 
             It uses the category value to & agains the selected category to see if it
             should be shown. 
-        """
-        """ 
+
             Pull back the whole catalog
             Sample XMl blob:
                 <catalog apiVersion="1" playToAvailable="true" name="server" href="/data/data.xml?id=0" type="folder" art="/images/apple_touch_icon_precomposed.png" server="3.10.13.9930" product="PlayOn">
@@ -323,7 +322,7 @@ class Playon:
                     name = group.attrib.get('name').encode('ascii', 'ignore') #TODO: Fix for international characters.
                     url = self.build_url({'mode': group.attrib.get('type'), 
                                      'foldername': name, 
-                                     'href': group.attrib.get('href'), 
+                                     'href': group.attrib.get('href'),
                                      'nametree': name})
                     self.addDir(name,url,image,image)
         except Exception,e:
@@ -552,7 +551,6 @@ class Playon:
         dur = 0
         meta = {}
         title = ((items.get('tvshowtitle','') or items.get('title','') or items.get('label','')))
-        eptitle = ((items.get('subtitle','') or items.get('title','')))
         year = str(items.get('year',''))
 
         if type in ['episode','episodes','tvshow']:
@@ -571,7 +569,7 @@ class Playon:
                 
             if (int(items.get('season','0')) + int(items.get('season','0'))) > 0:
                 try:
-                    meta  = normalizeJson(metaget.get_episode_meta(title, '', season=items.get('season',''), episode=items.get('episode','')))
+                    meta  = normalizeJson(metaget.get_episode_meta(title, '', season=items.get('season',''), episode=items.get('episode',''), episode_title=items.get('title','')))
                     items = mergeItems(meta,items)
                 except Exception,e:
                     log('parseMissingMeta, get_episode_meta(tvshow) failed! ' + str(e))
