@@ -18,7 +18,7 @@
 
 import sys, os, re, random, traceback
 import urlparse, urllib, urllib2, socket
-import xbmc, xbmcplugin, xbmcaddon, xbmcgui, xbmcvfs
+import xbmc, xbmcplugin, xbmcaddon, xbmcgui
 import xml.etree.ElementTree as ElementTree 
 from simplecache import use_cache, SimpleCache
 
@@ -40,7 +40,7 @@ ICON = os.path.join(ADDON_PATH, 'icon.png')
 FANART = os.path.join(ADDON_PATH, 'fanart.jpg')
 
 # Playon Info
-MEDIA_PATH = ADDON_PATH + '/resources/media/' 
+MEDIA_PATH = ADDON_PATH + '/resources/media/'
 PLAYON_ICON = '/images/play_720.png'
 PLAYON_DATA = '/data/data.xml'
 BASE_URL = sys.argv[0]
@@ -227,7 +227,7 @@ class Playon:
                 REAL_SETTINGS.setSetting("playonUPNPid",upnpID.rstrip('/'))
                 return upnpID
 
-                
+
     def get_xml(self, url):
         """ This will pull down the XML content and return a ElementTree. """
         log('get_xml: ' + url)
@@ -291,7 +291,8 @@ class Playon:
             It uses the category value to & agains the selected category to see if it
             should be shown. 
         """
-        """ Pull back the whole catalog
+        """ 
+            Pull back the whole catalog
             Sample XMl blob:
                 <catalog apiVersion="1" playToAvailable="true" name="server" href="/data/data.xml?id=0" type="folder" art="/images/apple_touch_icon_precomposed.png" server="3.10.13.9930" product="PlayOn">
                     <group name="PlayMark" href="/data/data.xml?id=playmark" type="folder" childs="0" category="256" art="/images/provider.png?id=playmark" />
@@ -359,11 +360,11 @@ class Playon:
                 log(group.attrib.get('href'))
                 # This is the top group node, just need to check if we can search. 
                 if group.attrib.get('searchable') != None:
-                    # We can search at this group level. Add a list item for it. 
+                    # We can search at this group level. Add a list item for it.
                     name  = "Search" #TODO: Localize
                     url   = self.build_url({'mode': 'search', 'id': group.attrib.get('id')})
                     image = playonInternalUrl + folderIcon(ranNum)
-                    self.addDir(name,url,image,image)  
+                    self.addDir(name,url,image,image)
                 else:
                     # Build up the name tree.
                     name = group.attrib.get('name').encode('ascii', 'ignore')
@@ -385,7 +386,7 @@ class Playon:
                                     'foldername': name, 
                                     'href': group.attrib.get('href'), 
                                     'image': image, 
-                                    'desc': desc, 
+                                    'desc': desc,
                                     'parenthref': group.attrib.get('href')}) #,'nametree': nametree + '/' + name
                     self.getMeta('null', name, desc, url, image, group.attrib.get('type'),cnt=len(xml.getiterator('group')))
         except Exception,e:
@@ -428,7 +429,7 @@ class Playon:
                         if group.attrib.get('art') == None:
                             image = playonInternalUrl + folderIcon(ranNum)
                         else:
-                            image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')        
+                            image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')  
                     elif group.attrib.get('type') == 'video':
                         if group.attrib.get('art') == None:
                             image = playonInternalUrl + PLAYON_ICON
@@ -466,7 +467,7 @@ class Playon:
                 if group.attrib.get('href') == href:
                     continue
                 
-                # Build up the name tree. 
+                # Build up the name tree.
                 name = group.attrib.get('name').encode('ascii', 'ignore')
                 desc = group.attrib.get('description')
                 if group.attrib.get('type') == 'folder':
@@ -496,7 +497,9 @@ class Playon:
         
     def parseURL(self, nametree):
         log("parseURL")
-        """ Run though the name tree! No restart issues but slower."""
+        """ 
+            Run though the name tree! No restart issues but slower.
+        """
         nametreelist = nametree.split('/')
         roothref = None
         for group in self.get_xml(self.build_playon_url()).getiterator('group'):
@@ -522,7 +525,7 @@ class Playon:
         if useUPNP == False:
             url = playonInternalUrl + '/' + src
         else:
-            url = playonExternalUrl + '/' + src.split('.')[0].split('/')[0] + '/'        
+            url = playonExternalUrl + '/' + src.split('.')[0].split('/')[0] + '/'
         self.getMeta(nametree, name, desc, url, image, 'player')
 
 
