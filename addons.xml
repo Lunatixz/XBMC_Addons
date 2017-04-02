@@ -21,11 +21,13 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.adverts" name="TV Adverts" version="0.1.3" provider-name="Lunatixz, lordindy">
+<addon id="plugin.video.adverts" name="AdverToLog" version="0.1.4" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.14.0"/>
+        <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.beautifulsoup" version="3.2.1"/>
-        <import addon="script.common.plugin.cache" version="2.5.5"/>
+        <import addon="script.module.requests" version="2.7.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="script.module.simplecache" version="1.0.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -36,9 +38,8 @@
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.adverts</source>
-        <email>pseudotvlive@gmail.com</email>
         <website>http://www.advertolog.com</website>
-        <forum>http://forum.kodi.tv/</forum>
+        <forum>http://forum.kodi.tv/showthread.php?tid=311064</forum>
         <news></news>
         <assets>
             <icon>icon.png</icon>

@@ -1,4 +1,4 @@
-#   Copyright (C) 2016 Lunatixz
+#   Copyright (C) 2017 Lunatixz, lordindy
 #
 #
 # This file is part of TV Adverts.
@@ -16,16 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with TV Adverts.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, re, os, string
+import urllib, urllib2, re, os, socket
 import xbmcplugin, xbmcgui, xbmcaddon, xbmc
 from BeautifulSoup import BeautifulSoup
+from simplecache import use_cache, SimpleCache
 
-# Commoncache plugin import
-try:
-    import StorageServer
-except Exception,e:
-    import storageserverdummy as StorageServer
-    
+if sys.version_info < (2, 7):
+    import simplejson as json
+else:
+    import json
+
+## GLOBALS ##
+baseurl='http://www.advertolog.com'
+TIMEOUT = 15
+
 # Plugin Info
 ADDON_ID = 'plugin.video.adverts'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
@@ -34,37 +38,51 @@ ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
-REQUESTS_LOC = xbmc.translatePath(os.path.join(SETTINGS_LOC, 'requests',''))
-THUMB = os.path.join(ADDON_PATH, 'icon.png')
+ICON = os.path.join(ADDON_PATH, 'icon.png')
 FANART = os.path.join(ADDON_PATH, 'fanart.jpg')
-forceSet = REAL_SETTINGS.getSetting('force_preference') == "true"
-weekly = StorageServer.StorageServer("plugin://plugin.video.adverts/" + "weekly",24 * 7)
-baseurl='http://www.advertolog.com'
 
-def openURL(url):
-    try:
-        result = weekly.cacheFunction(openURL_NEW, url)
-        if result == 0:
-            raise
-    except:
-        result = openURL_NEW(url)
-    if not result:
-        result = ''
-    return result  
-        
-def openURL_NEW(url):
-    req = urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-    response = urllib2.urlopen(req).read()
-    return response
+# User Settings
+DEBUG = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
+forceSet = REAL_SETTINGS.getSetting('force_preference') == "true"
+if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True":
+    forceSet = True
     
-def replaceXmlEntities(link):
-    entities = (
-        ("%3A",":"),("%2F","/"),("%3D","="),("%3F","?"),("%26","&"),("%22","\""),("%7B","{"),("%7D",")"),("%2C",","),("%24","$"),("%23","#"),("%40","@")
-      );
-    for entity in entities:
-       link = link.replace(entity[0],entity[1]);
-    return link;
+socket.setdefaulttimeout(TIMEOUT)
+
+def log(msg, level=xbmc.LOGDEBUG):
+    msg = stringify(msg[:1000])
+    if DEBUG == False and level == xbmc.LOGDEBUG:
+        return
+    if level == xbmc.LOGERROR:
+        msg += ' ,' + traceback.format_exc()
+    xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + msg, level)
+
+def ascii(string):
+    if isinstance(string, basestring):
+        if isinstance(string, unicode):
+           string = string.encode('ascii', 'ignore')
+    return string
+
+def uni(string):
+    if isinstance(string, basestring):
+        if isinstance(string, unicode):
+           string = string.encode('utf-8', 'ignore' )
+        else:
+           string = ascii(string)
+    return string
+
+def stringify(string):
+    if isinstance(string, list):
+        string = stringify(string[0])
+    elif isinstance(string, (int, float, long, complex, bool)):
+        string = str(string)
+    elif isinstance(string, (str, unicode)):
+        string = uni(string)
+    elif not isinstance(string, (str, unicode)):
+        string = ascii(string)
+    if isinstance(string, basestring):
+        return string
+    return ''
 
 def cleanString(string):
     newstr = uni(string)
@@ -81,28 +99,64 @@ def uncleanString(string):
     newstr = newstr.replace('&lt;', '<')
     newstr = newstr.replace('&quot;', '"')
     return uni(newstr)
-        
-def uni(string):
-    if isinstance(string, basestring):
-        if isinstance(string, unicode):
-           string = string.encode('utf-8', 'ignore' )
-    return string
     
-def CATEGORIES():
-        addDir('Countries','http://www.advertolog.com/countries/',3)
-        addDir('Brands','http://www.advertolog.com/brands/',4)
-        addDir('Years','http://www.advertolog.com/countries/',33)         
-        addDir('Business Sectors','http://www.advertolog.com/business-sectors/',6)
-        # addDir('Awards','http://www.advertolog.com/festivals-awards/',6)
+def replaceXmlEntities(link):
+    entities = (
+        ("%3A",":"),("%2F","/"),("%3D","="),("%3F","?"),("%26","&"),("%22","\""),("%7B","{"),("%7D",")"),("%2C",","),("%24","$"),("%23","#"),("%40","@")
+      );
+    for entity in entities:
+       link = link.replace(entity[0],entity[1]);
+    return link;
+                 
+def get_params():
+    param=[]
+    if len(sys.argv[2])>=2:
+        params=sys.argv[2]
+        cleanedparams=params.replace('?','')
+        if (params[len(params)-1]=='/'):
+            params=params[0:len(params)-2]
+        pairsofparams=cleanedparams.split('&')
+        param={}
+        for i in range(len(pairsofparams)):
+            splitparams={}
+            splitparams=pairsofparams[i].split('=')
+            if (len(splitparams))==2:
+                param[splitparams[0]]=splitparams[1]             
+    return param
+        
+        
+class Adverts():
+    def __init__(self):
+        log('__init__')
+        self.cache = SimpleCache()
+        
+    '''
+        sites not updated regularly, no need to burden site. Cache for 14days
+    '''
+    @use_cache(14)
+    def openURL(self, url):
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+        response = urllib2.urlopen(req).read()
+        return response
 
-def BRANDORCOUNTRYPAGE(url):
-        link = openURL(url)
+        
+    def CATEGORIES(self):
+        self.addDir('Countries','http://www.advertolog.com/countries/',3)
+        self.addDir('Brands','http://www.advertolog.com/brands/',4)
+        self.addDir('Years','http://www.advertolog.com/countries/',8)         
+        self.addDir('Business Sectors','http://www.advertolog.com/business-sectors/',6)
+        # self.addDir('Awards','http://www.advertolog.com/festivals-awards/',6)
+
+            
+    def BRANDORCOUNTRYPAGE(self, url):
+        link = self.openURL(url)
         link=link.decode('utf-8')
         soup = BeautifulSoup(link,convertEntities=BeautifulSoup.HTML_ENTITIES)
         catlink=re.compile('<a href="(.+?)" >TV & Cinema</a>').findall(link)
         if catlink:
             url=baseurl+catlink[0]
-            link = openURL(url)
+            link = self.openURL(url)
             soup = BeautifulSoup(link)
 
         #find the adverts, if any                    
@@ -113,19 +167,20 @@ def BRANDORCOUNTRYPAGE(url):
                     name=ad.a.img["alt"].encode('UTF-8')
                     adurl=ad.a["href"]
                     thumbnail=ad.a.img["src"]
-                    if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
-                        VIDEOLINKS(baseurl+adurl,name,len(adverts))
+                    if forceSet == True:
+                        self.VIDEOLINKS(baseurl+adurl,name,len(adverts))
                     else:
-                        addDir(name,baseurl+adurl,2,thumbnail)
-
-def BRANDORCOUNTRYYEAR(url):
-        link = openURL(url)
+                        self.addDir(name,baseurl+adurl,2,thumbnail)
+                    
+                    
+    def BRANDORCOUNTRYYEAR(self, url):
+        link = self.openURL(url)
         link=link.decode('utf-8')
         soup = BeautifulSoup(link,convertEntities=BeautifulSoup.HTML_ENTITIES)
         catlink=re.compile('<a href="(.+?)" >TV & Cinema</a>').findall(link)
         if catlink:
             url=baseurl+catlink[0]
-            link = openURL(url)
+            link = self.openURL(url)
             soup = BeautifulSoup(link)
                 
         # find the year links, if any
@@ -137,7 +192,7 @@ def BRANDORCOUNTRYYEAR(url):
                 temp=re.compile('<a href="(.+?)">(.+?)</a>').findall(str(links))
                 years.append(temp[0])
             for yearurl, name in years:
-                addDir(name,baseurl+yearurl,1)
+                self.addDir(name,baseurl+yearurl,1)
                 
         # #Get the "Next Page" link, if any
         # if soup.find(text=re.compile("Next \xbb\xbb")):
@@ -145,12 +200,12 @@ def BRANDORCOUNTRYYEAR(url):
                 # nextpage=soup.find(text=re.compile("Next \xbb\xbb")).findPrevious('span').findAll('a')
                 # nextpage=re.compile('\[<a href="(.+?)">Next').findall(str(nextpage))
                 # nextpage=baseurl+nextpage[0]
-                # addDir("Next Page >>",nextpage,1)
+                # self.addDir("Next Page >>",nextpage,1)
 
-def VIDEOLINKS(url,name,total=1):
-        link = openURL(url)
+                    
+    def VIDEOLINKS(self, url, name, total=1):
+        link = self.openURL(url)
         soup = BeautifulSoup(link)
-        # print soup
         found = False
         #GET THE VIDEO LINKS FROM THE PAGE, IF ANY
         #get the image
@@ -175,163 +230,149 @@ def VIDEOLINKS(url,name,total=1):
             if vids:
                 vids=soup.find('ul',"resolutions").findAll('a')
                 for url in vids:     
-                    if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
+                    if forceSet == True:
                         if url.string.lower() == REAL_SETTINGS.getSetting('limit_preferred_resolution').lower():
                             found = True
-                            addLink(name,url['name'],image[0],total)
-                            break
+                            self.addLink(name,url['name'],9,image[0],total)
+                            return
                     else:
-                        addLink(url.string,url['name'],image[0],total)
+                        self.addLink(url.string,url['name'],9,image[0],total)
+                        
         if (xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" and found == True):
             return
             
         if not vid:
             if len(re.compile("url:'(.+?).mp4',").findall(link)) > 0:
                 vid=((re.compile("url:'(.+?).mp4',").findall(link))[0]) + '.mp4'
-        addLink('360p',vid,image[0])
+        if len(vid) > 0:
+            self.addLink('360p',vid,9,image[0])
+        else:
+            self.addLink('SWF video unavailable','',9,image[0])
         
-    
-def LISTCOUNTRIES(url, year=False):
-        link = openURL(url)
+        
+    def LISTCOUNTRIES(self, url, year=False):
+        link = self.openURL(url)
         countries=re.compile('<a href="/countries/(.+?)">(.+?)</a>').findall(link)
         for url,country in countries:         
             if year: 
-                if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
+                if forceSet == True:
                     if country.lower() == REAL_SETTINGS.getSetting('limit_preferred_region').lower():
-                        BRANDORCOUNTRYPAGE('http://www.advertolog.com/countries/'+url)
+                        self.BRANDORCOUNTRYPAGE('http://www.advertolog.com/countries/'+url)
                         break
                 else:
-                    addDir(country,'http://www.advertolog.com/countries/'+url,10)
+                    self.addDir(country,'http://www.advertolog.com/countries/'+url,7)
             else:
-                if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" or forceSet == True:
+                if forceSet == True:
                     if country.lower() == REAL_SETTINGS.getSetting('limit_preferred_region').lower():
-                        BRANDORCOUNTRYPAGE('http://www.advertolog.com/countries/'+url)
+                        self.BRANDORCOUNTRYPAGE('http://www.advertolog.com/countries/'+url)
                         break
                 else:
-                    addDir(country,'http://www.advertolog.com/countries/'+url,1)
-                           
-def LISTBRANDLETTERS(url):
-        link = openURL(url)
+                    self.addDir(country,'http://www.advertolog.com/countries/'+url,1)
+                
+                    
+    def LISTBRANDLETTERS(self, url):
+        link = self.openURL(url)
         match=re.compile('<h3 style="font-weight:bold; font-size:24px;"><a href=".+?" style="text-decoration:none">(.+?)</a></h3>').findall(link)
         #Get the brand letters
         letters=re.compile('<h3 style="font-weight:bold; font-size:24px;"><a href=".+?" style="text-decoration:none">(.+?)</a></h3>').findall(link)
         letters=map(lambda x: x.lower(), letters)
         for letter in letters:
-            addDir(letter,'http://www.advertolog.com/brands/letter-'+letter+'/',5)
-            
-def LISTBRANDS(url):
-        link = openURL(url)
+            self.addDir(letter.upper(),'http://www.advertolog.com/brands/letter-'+letter+'/',5)
+           
+               
+    def LISTBRANDS(self, url):
+        link = self.openURL(url)
         soup = BeautifulSoup(link,convertEntities=BeautifulSoup.HTML_ENTITIES)
         brands=re.compile('<a href="(.+?)" id="CompanyListingTitle_.+?">(.+?)</a>').findall(link)
         for url, name in brands:
-            addDir(name,baseurl+url,1)
+            self.addDir(name,baseurl+url,1)
         #Get the "Next Page" link, if any
         if soup.find(text=re.compile("Next ")):
             if soup.find(text=re.compile("Next ")).findPrevious('span').findAll('a'):
                 nextpage=soup.find(text=re.compile("Next ")).findPrevious('span').findAll('a')
                 nextpage=re.compile('\[<a href="(.+?)">Next ').findall(str(nextpage))
                 nextpage=baseurl+nextpage[0]
-                addDir("Next Page >>",nextpage,5)
+                self.addDir("Next Page >>",nextpage,5)
 
-def LISTSECTORS(url):
-        link = openURL(url)
+                    
+    def LISTSECTORS(self, url):
+        link = self.openURL(url)
         soup = BeautifulSoup(link,convertEntities=BeautifulSoup.HTML_ENTITIES)
         sectors=re.compile('<a href="(.+?)/">\n        (.+?)</a>').findall(str(soup))
         sectors.sort()
         for url, name in sectors:
-            addDir(name,baseurl+url,1)
-                  
-def get_params():
-        param=[]
-        paramstring=sys.argv[2]
-        if len(paramstring)>=2:
-            params=sys.argv[2]
-            cleanedparams=params.replace('?','')
-            if (params[len(params)-1]=='/'):
-                params=params[0:len(params)-2]
-            pairsofparams=cleanedparams.split('&')
-            param={}
-            for i in range(len(pairsofparams)):
-                splitparams={}
-                splitparams=pairsofparams[i].split('=')
-                if (len(splitparams))==2:
-                    param[splitparams[0]]=splitparams[1]             
-        return param
+            self.addDir(name,baseurl+url,1)
+
+
+    def LinkPlay(self, name, url):
+        listitem = xbmcgui.ListItem(name, path=url)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, listitem)
+
         
-def addLink(name,url,iconimage=THUMB,total=0):
+    def addLink(self, name, u, mode, thumb=ICON, total=0):
         name = uncleanString(name)
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        log('addLink, name = ' + name)
+        liz=xbmcgui.ListItem(name)
         liz.setProperty('IsPlayable', 'true')
-        liz.setProperty('fanart_image', FANART)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz,totalItems=total)
-        
-def addDir(name,url,mode,iconimage=THUMB):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        name = '- %s'%uncleanString(name)
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+        liz.setArt({'thumb':thumb,'fanart':FANART})
+        liz.setInfo( type="Video", infoLabels={"label":name,"title":name} )
+        u=sys.argv[0]+"?url="+urllib.quote_plus(u)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,totalItems=total)
+
+
+    def addDir(self, name, u, mode, thumb=ICON):
+        name = uncleanString(name)
+        log('addDir, name = ' + name)
+        liz=xbmcgui.ListItem(name)
         liz.setProperty('IsPlayable', 'false')
-        liz.setProperty('fanart_image', FANART)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
+        liz.setInfo(type="Video", infoLabels={"label":name,"title":name} )
+        liz.setArt({'thumb':thumb,'fanart':FANART})
+        u=sys.argv[0]+"?url="+urllib.quote_plus(u)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-             
+
+        
 params=get_params()
 url=None
 name=None
 mode=None
 
 try:
-        url=urllib.unquote_plus(params["url"])
+    url=urllib.unquote_plus(params["url"])
 except:
-        pass
+    pass
 try:
-        name=urllib.unquote_plus(params["name"])
+    name=urllib.unquote_plus(params["name"])
 except:
-        pass
+    pass
 try:
-        mode=int(params["mode"])
+    mode=int(params["mode"])
 except:
-        pass
+    pass
 
-print "Mode: "+str(mode)
-print "URL: "+str(url)
-print "Name: "+str(name)
+log("Mode: "+str(mode))
+log("URL : "+str(url))
+log("Name: "+str(name))
 
 if mode==None or url==None or len(url)<1:
-        print ""
-        CATEGORIES()
-       
+    Adverts().CATEGORIES()  
 elif mode==1:
-        print ""+url
-        BRANDORCOUNTRYPAGE(url)
-        
-elif mode==10:
-        print ""+url
-        BRANDORCOUNTRYYEAR(url)
-        
+    Adverts().BRANDORCOUNTRYPAGE(url)    
 elif mode==2:
-        print ""+url
-        VIDEOLINKS(url,name)
-
+    Adverts().VIDEOLINKS(url,name)
 elif mode==3:
-        print ""+url
-        LISTCOUNTRIES(url)
-        
-elif mode==33:
-        print ""+url
-        LISTCOUNTRIES(url,True)
-        
+    Adverts().LISTCOUNTRIES(url)         
 elif mode==4:
-        print ""+url
-        LISTBRANDLETTERS(url)
-
+    Adverts().LISTBRANDLETTERS(url)
 elif mode==5:
-        print ""+url
-        LISTBRANDS(url)
-
+    Adverts().LISTBRANDS(url)
 elif mode==6:
-        print ""+url
-        LISTSECTORS(url)
+    Adverts().LISTSECTORS(url)   
+elif mode==7:
+    Adverts().BRANDORCOUNTRYYEAR(url) 
+elif mode==8:
+    Adverts().LISTCOUNTRIES(url,True)  
+elif mode == 9: 
+    Adverts().LinkPlay(name, url)
         
 xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL )
 xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_NONE )

@@ -276,7 +276,7 @@ class iSpot():
 
 
     def addLink(self, name, u, mode, infoList=False, infoArt=False, total=0):
-        name = cleanString(name)
+        name = uncleanString(name)
         log('addLink, name = ' + name)
         liz=xbmcgui.ListItem(name)
         liz.setProperty('IsPlayable', 'true')
@@ -294,6 +294,7 @@ class iSpot():
 
 
     def addDir(self, name, u, mode, infoList=False, infoArt=False):
+        name = uncleanString(name)
         log('addDir, name = ' + name)
         liz=xbmcgui.ListItem(name)
         liz.setProperty('IsPlayable', 'false')
