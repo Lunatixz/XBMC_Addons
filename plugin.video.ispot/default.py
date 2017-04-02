@@ -1,19 +1,3 @@
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      Kevin S. Graer
-#
-# Created:     01/04/2017
-# Copyright:   (c) Kevin S. Graer 2017
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
 #   Copyright (C) 2017 Lunatixz
 #
 #
@@ -33,10 +17,9 @@ if __name__ == '__main__':
 # along with iSpot.  If not, see <http://www.gnu.org/licenses/>.
 
 # -*- coding: utf-8 -*-
-import os, re, sys, time, datetime, traceback, string
-import urllib, urllib2, base64, HTMLParser, requests, socket
+import os, re, sys, time, datetime, traceback
+import urllib, urllib2, base64, HTMLParser, socket
 import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
-
 
 from simplecache import use_cache, SimpleCache
 
@@ -195,10 +178,6 @@ class iSpot():
 
     def PageParse(self, url):
         log('PageParse, url = ' + url)
-        if url == 'Next':
-            self.buildLink(self.LINKLST)
-            return
-
         link = self.read_url_cached(url)
         if url.startswith('http://www.ispot.tv/events'):
             catlink = re.compile('<a href="/(.+?)">(.+?)</a>').findall(link)
@@ -237,7 +216,7 @@ class iSpot():
             self.LinkParse(catlink, self.PAGECNT, self.PAGEMAX)
 
 
-    def LinkParse(self, catlink, cnt, max):
+    def LinkParse(self, catlink, cnt, cntmax):
         log('LinkParse')
         for i in range(len(catlink)):
             try:
@@ -287,7 +266,7 @@ class iSpot():
             except Exception,e:
                 log('PageParse, failed ' + str(e))
         #todo pagination?
-        # if cnt < max:
+        # if cnt < cntmax:
             # self.addDir('Next Page','Next',1)
 
         
