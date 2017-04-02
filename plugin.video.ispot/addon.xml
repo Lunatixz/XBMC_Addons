@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.ispot" version="1.1.1" name="iSpot TV Adverts" provider-name="Lunatixz">
+<addon id="plugin.video.ispot" version="1.1.2" name="iSpot TV Adverts" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.14.0"/>
+        <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.requests" version="2.7.0"/>
-        <import addon="script.module.pyfscache" version="0.9.12"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.beautifulsoup" version="3.2.1"/>
+        <import addon="script.module.simplecache" version="1.0.0"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -17,7 +16,7 @@
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.ispot</source>
         <website>http://www.ispot.tv/</website>
-        <forum>http://forum.kodi.tv</forum>
+        <forum>http://forum.kodi.tv/showthread.php?tid=311057</forum>
         <news></news>
         <assets>
             <icon>icon.png</icon>
