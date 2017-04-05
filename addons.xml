@@ -50,7 +50,7 @@
 
 <addon id="plugin.video.ispot" version="1.1.2" name="iSpot TV Adverts" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.24.0"/>
+        <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.requests" version="2.7.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
@@ -59,8 +59,8 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary lang="en">iSpot.tv internet's most comprehensive database of nationally airing TV Commercials.</summary>
-        <description lang="en">Welcome to the Internet's most comprehensive database of nationally airing TV Commercials. Explore the actors, songs and offers in the spots you see on TV.</description>
+        <summary lang="en_GB">iSpot.tv internet's most comprehensive database of nationally airing TV Commercials.</summary>
+        <description lang="en_GB">Welcome to the Internet's most comprehensive database of nationally airing TV Commercials. Explore the actors, songs and offers in the spots you see on TV.</description>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.ispot</source>
@@ -74,21 +74,20 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.playonbrowser" name="Playon Browser" version="1.0.20" provider-name="Lunatixz">
+<addon id="plugin.video.playonbrowser" name="Playon Browser" version="1.0.21" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.24.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.simplecache" version="1.0.0"/>
-        <import addon="script.module.metahandler" version="2.9.0"/>
-        <import addon="script.module.skin.helper.artutils" version="1.0.0" />
+        <import addon="script.module.metahandler" version="2.9.0" optional="true"/>
+        <import addon="script.module.skin.helper.artutils" version="1.0.0" optional="true"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary lang="en_US">Allows you to browse m.playon.tv from Kodi.</summary>
-        <description lang="en_US">Allows you to interact with the playon web interface using the standard kodi controls.</description>
-        <disclaimer lang="en_US">Requires Playon Software</disclaimer>
+        <summary lang="en_GB">Allows you to browse m.playon.tv from Kodi.</summary>
+        <description lang="en_GB">Allows you to interact with the playon web interface using the standard kodi controls.</description>
+        <disclaimer lang="en_GB">Requires Playon Software</disclaimer>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
         <forum>http://forum.kodi.tv/showthread.php?tid=233136</forum>

@@ -36,7 +36,6 @@ TIMEOUT = 15
 ADDON_ID = 'plugin.video.ispot'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 SETTINGS_LOC = REAL_SETTINGS.getAddonInfo('profile')
-ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')

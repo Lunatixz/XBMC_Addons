@@ -20,7 +20,6 @@ import sys, os, re, random, traceback
 import urlparse, urllib, urllib2, socket
 import xbmc, xbmcplugin, xbmcaddon, xbmcgui
 import xml.etree.ElementTree as ElementTree 
-from simplecache import use_cache, SimpleCache
 
 if sys.version_info < (2, 7):
     import simplejson as json
@@ -32,21 +31,18 @@ else:
 # Plugin Info
 ADDON_ID = 'plugin.video.playonbrowser'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
 ICON = os.path.join(ADDON_PATH, 'icon.png')
 FANART = os.path.join(ADDON_PATH, 'fanart.jpg')
+LANGUAGE = REAL_SETTINGS.getLocalizedString
 
 # Playon Info
-MEDIA_PATH = ADDON_PATH + '/resources/media/'
-PLAYON_ICON = '/images/play_720.png'
 PLAYON_DATA = '/data/data.xml'
 BASE_URL = sys.argv[0]
 BASE_HANDLE = int(sys.argv[1])
 args = urlparse.parse_qs(sys.argv[2][1:])
-REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 TIMEOUT = 15
 JSON_ART = ["thumb","poster","fanart","banner","landscape","clearart","clearlogo"]
 ITEM_TYPES = ['genre','country','year','episode','season','sortepisode','sortseason','episodeguide','showlink','top250','setid','tracknumber','rating','userrating','watched','playcount','overlay','director','mpaa','plot','plotoutline','title','originaltitle','sorttitle','duration','studio','tagline','writer','tvshowtitle','premiered','status','set','setoverview','tag','imdbnumber','code','aired','credits','lastplayed','album','artist','votes','path','trailer','dateadded','mediatype','dbid']
@@ -54,13 +50,14 @@ ITEM_TYPES = ['genre','country','year','episode','season','sortepisode','sortsea
 socket.setdefaulttimeout(TIMEOUT)
     
 # User Settings
-DEBUG = True#REAL_SETTINGS.getSetting("debug") == "true"
+DEBUG =  REAL_SETTINGS.getSetting("debug") == "true"
 KODILIBRARY   = False #todo strm contextMenu
 useUPNP = REAL_SETTINGS.getSetting("useUPNP") == "true"
 cache = REAL_SETTINGS.getSetting('cache') == "true"
 incMeta = REAL_SETTINGS.getSetting('meta') == "true"
 playDirect = REAL_SETTINGS.getSetting("playDirect") == "true"
-TMDB_API_KEY = REAL_SETTINGS.getSetting("TMDB_API_KEY") 
+TMDB_API_KEY = REAL_SETTINGS.getSetting("TMDB_API_KEY")
+
 if xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True":
     playDirect   = False
  
@@ -222,7 +219,7 @@ class Playon:
                     if (item['label']).lower().startswith('playon'):
                         REAL_SETTINGS.setSetting("playonUPNPid",item['file'].rstrip('/'))
                         return item['file']
-            upnpID = xbmcgui.Dialog().browse(0, 'Select Playon: Server, Click "OK"', 'files', '', False, False, 'upnp://')
+            upnpID = xbmcgui.Dialog().browse(0, LANGUAGE(42010), 'files', '', False, False, 'upnp://')
             if upnpID != -1:
                 REAL_SETTINGS.setSetting("playonUPNPid",upnpID.rstrip('/'))
                 return upnpID
@@ -377,7 +374,7 @@ class Playon:
                             
                     elif group.attrib.get('type') == 'video':
                         if group.attrib.get('art') == None:
-                            image = (playonInternalUrl + PLAYON_ICON)
+                            image = os.path.join(playonInternalUrl,'images','play_720.png')
                         else:
                             image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')
 
@@ -431,7 +428,7 @@ class Playon:
                             image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')
                     elif group.attrib.get('type') == 'video':
                         if group.attrib.get('art') == None:
-                            image = playonInternalUrl + PLAYON_ICON
+                            image = os.path.join(playonInternalUrl,'images','play_720.png')
                         else:
                             image = (playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large') 
 
@@ -477,7 +474,7 @@ class Playon:
                         
                 elif group.attrib.get('type') == 'video':
                     if group.attrib.get('art') == None:
-                        image = playonInternalUrl + PLAYON_ICON
+                        image = os.path.join(playonInternalUrl,'images','play_720.png')
                     else:
                         image = ((playonInternalUrl + group.attrib.get('art')).replace('&size=tiny','&size=large')).replace('&size=tiny','&size=large')
                     
