@@ -69,8 +69,8 @@ except Exception,e:
     xbmc.log("metahandler Import failed! " + str(e), xbmc.LOGERROR)    
 
 try:
-    from artutils import ArtUtils
-    artutils = ArtUtils()
+    from metadatautils import MetadataUtils
+    artutils = MetadataUtils()
 except Exception,e:  
     incMeta = False
     xbmc.log("artworkUtils Import failed! " + str(e), xbmc.LOGERROR)   
@@ -187,7 +187,6 @@ def folderIcon(val):
          
 class Playon:
     def __init__(self):
-        self.cache = SimpleCache()
         random.seed()
 
     

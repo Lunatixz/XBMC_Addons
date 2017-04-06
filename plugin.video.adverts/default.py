@@ -16,15 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with TV Adverts.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, re, os, socket
+import urllib, urllib2, re, os, socket, json
 import xbmcplugin, xbmcgui, xbmcaddon, xbmc
 from BeautifulSoup import BeautifulSoup
 from simplecache import use_cache, SimpleCache
-
-if sys.version_info < (2, 7):
-    import simplejson as json
-else:
-    import json
 
 ## GLOBALS ##
 baseurl='http://www.advertolog.com'
@@ -34,7 +29,6 @@ TIMEOUT = 15
 ADDON_ID = 'plugin.video.adverts'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 SETTINGS_LOC = REAL_SETTINGS.getAddonInfo('profile')
-ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
@@ -127,12 +121,10 @@ def get_params():
         
 class Adverts():
     def __init__(self):
-        log('__init__')
         self.cache = SimpleCache()
+
         
-    '''
-        sites not updated regularly, no need to burden site. Cache for 14days
-    '''
+    # sites not updated regularly, no need to burden site. Cache for 14days
     @use_cache(14)
     def openURL(self, url):
         req = urllib2.Request(url)
@@ -194,13 +186,13 @@ class Adverts():
             for yearurl, name in years:
                 self.addDir(name,baseurl+yearurl,1)
                 
-        # #Get the "Next Page" link, if any
-        # if soup.find(text=re.compile("Next \xbb\xbb")):
-            # if soup.find(text=re.compile("Next \xbb\xbb")).findPrevious('span').findAll('a'):
-                # nextpage=soup.find(text=re.compile("Next \xbb\xbb")).findPrevious('span').findAll('a')
-                # nextpage=re.compile('\[<a href="(.+?)">Next').findall(str(nextpage))
-                # nextpage=baseurl+nextpage[0]
-                # self.addDir("Next Page >>",nextpage,1)
+        #Get the "Next Page" link, if any
+        if soup.find(text=re.compile("Next \xbb\xbb")):
+            if soup.find(text=re.compile("Next \xbb\xbb")).findPrevious('span').findAll('a'):
+                nextpage=soup.find(text=re.compile("Next \xbb\xbb")).findPrevious('span').findAll('a')
+                nextpage=re.compile('\[<a href="(.+?)">Next').findall(str(nextpage))
+                nextpage=baseurl+nextpage[0]
+                self.addDir("''Next Page >>",nextpage,1)
 
                     
     def VIDEOLINKS(self, url, name, total=1):
@@ -214,7 +206,8 @@ class Adverts():
             image[0]=replaceXmlEntities(image[0])
         else:
             image=''
-        #get the default video link (most are hidden due to subscription, but the low res video link is hidden in the header tag    
+       
+       #get the default video link (most are hidden due to subscription, but the low res video link is hidden in the header tag    
         vid=re.compile('meta property="og:video" content="(.+?)" />').findall(link)
         if vid:
             vid[0]=replaceXmlEntities(vid[0])
@@ -226,7 +219,6 @@ class Adverts():
         vids=soup.find('ul',"resolutions")
         if vids:
             vids=soup.find('ul',"resolutions").findAll('a')
-            vid=[]
             if vids:
                 vids=soup.find('ul',"resolutions").findAll('a')
                 for url in vids:     
@@ -237,17 +229,17 @@ class Adverts():
                             return
                     else:
                         self.addLink(url.string,url['name'],9,image[0],total)
-                        
-        if (xbmcgui.Window(10000).getProperty('PseudoTVRunning') == "True" and found == True):
-            return
-            
-        if not vid:
+                                    
+        if not vids: # attempt to find stray low quality video
             if len(re.compile("url:'(.+?).mp4',").findall(link)) > 0:
                 vid=((re.compile("url:'(.+?).mp4',").findall(link))[0]) + '.mp4'
-        if len(vid) > 0:
-            self.addLink('360p',vid,9,image[0])
-        else:
-            self.addLink('SWF video unavailable','',9,image[0])
+                
+                if len(vid) > 0:
+                    self.addLink('360p',vid,9,image[0])
+                else:
+                    self.addLink('SWF video unavailable','',9,image[0])
+                return
+        self.addLink('video unavailable','',9,image[0])
         
         
     def LISTCOUNTRIES(self, url, year=False):
@@ -292,7 +284,7 @@ class Adverts():
                 nextpage=soup.find(text=re.compile("Next ")).findPrevious('span').findAll('a')
                 nextpage=re.compile('\[<a href="(.+?)">Next ').findall(str(nextpage))
                 nextpage=baseurl+nextpage[0]
-                self.addDir("Next Page >>",nextpage,5)
+                self.addDir("''Next Page >>",nextpage,5)
 
                     
     def LISTSECTORS(self, url):

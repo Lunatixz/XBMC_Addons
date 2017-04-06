@@ -1,4 +1,4 @@
-#   Copyright (C) 2016 Lunatixz
+#   Copyright (C) 2017 Lunatixz
 #
 #
 # This file is part of The Paramount Vault.
@@ -26,16 +26,10 @@ from pyfscache import *
 from xml.etree import ElementTree as ET
 from xml.dom.minidom import parse, parseString
 from datetime import timedelta
-      
-if sys.version_info < (2, 7):
-    import simplejson as json
-else:
-    import json
 
 # Plugin Info
 ADDON_ID = 'plugin.video.theparamountvault'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_ID = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
