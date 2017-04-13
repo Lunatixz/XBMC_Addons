@@ -1,5 +1,21 @@
-         
- #! /usr/bin/env python
+#   Copyright (C) 2017 Lunatixz
+#
+#
+# This file is part of CPU Benchmark.
+#
+# CPU Benchmark is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# CPU Benchmark is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with CPU Benchmark.  If not, see <http://www.gnu.org/licenses/>.
+
 
 """
 "PYSTONE" Benchmark Program
@@ -33,14 +49,13 @@ Version History:
 
 """
 
-import os, sys
+import os, sys, platform
 import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
 from time import clock
 
 # Plugin Info
 ADDON_ID       = 'script.pystone.benchmark'
 REAL_SETTINGS  = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_ID       = REAL_SETTINGS.getAddonInfo('id')
 ADDON_NAME     = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH     = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
 ADDON_VERSION  = REAL_SETTINGS.getAddonInfo('version')
@@ -69,41 +84,54 @@ class Record:
 
 def log(msg, level = xbmc.LOGDEBUG):
     xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + str(msg), level)
-    
-def showText(text, heading=ADDON_NAME):
-    log("utils: showText")
-    id = 10147
-    xbmc.executebuiltin('ActivateWindow(%d)' % id)
-    xbmc.sleep(100)
-    win = xbmcgui.Window(id)
-    retry = 50
-    while (retry > 0):
-        try:
-            xbmc.sleep(10)
-            retry -= 1
-            win.getControl(1).setLabel(heading)
-            win.getControl(5).setText(text)
-            return
-        except:
-            pass
-     
+
+def showText(text, header=ADDON_NAME):
+    xbmcgui.Dialog().textviewer(header, text)
+
 def okay(line1= '', line2= '', line3= '', header=ADDON_NAME):
     dlg = xbmcgui.Dialog()
     dlg.ok(header, line1, line2, line3)
     del dlg
 
 def main(loops=LOOPS):
-    benchtime, stones = pystones(loops)    
+    benchtime, stones = pystones(loops)
+    stones = int(round(stones))//10
+    REAL_SETTINGS.setSetting("cpuBench",str(stones))
+    
     # http://www.cpubenchmark.net/cpu_list.php
-    if stones > 2000:
+    maxm = 25236
+    minn = 79
+    med  = (maxm - minn) // 2
+    
+    try:
+        plat = platform.processor()
+    except:
+        plat = 'Unknown'
+        
+    if stones >= maxm:
         color = 'green'
-    elif stones < 1000:
-        color = 'red'
-    else:
+    elif stones < maxm and stones > med:
+        color = 'yellow'
+    elif stones < maxm and stones < med:
         color = 'orange'
+    else:
+        color = 'red'
+        
+    if stones > med:
+        msg = 'Top '
+    else:
+        msg = 'Bottom '
     stat = '[COLOR=%s]%g[/COLOR]'% (color, stones)
-    REAL_SETTINGS.setSetting("cpuBench",stat)
-    okay("Pystone(%s) time for %d passes = %g" % (ADDON_VERSION, loops, benchtime),"This machine benchmarks at %s pystones/second" % (stat),'[COLOR=red]RED=BAD[/COLOR][COLOR=gray]----[/COLOR][COLOR=orange]ORANGE=AVERAGE[/COLOR][COLOR=gray]----[/COLOR][COLOR=green]GREEN=GREAT[/COLOR]')
+    avg  = ((stones - minn) * 100) // maxm
+    space1 = repeat_to_length(' ',100 - avg)
+    space2 = repeat_to_length(' ',avg-1)
+    space3 = repeat_to_length(' ',(100 - avg) - len(msg))
+    arrow = '%s^%s[CR]%s%s[COLOR=%s]%d%s[/COLOR]%s'%(space1,space2,space3,msg,color,avg,'%',space2)
+    back = 'Click [I] Back [/I] or [I]Okay [/I] to exit'
+    showText("Pystone (v%s) time for %d passes = %g [CR]This machine [ %s ] [CR]benchmarks at %s pystones/second [CR][CR][COLOR=green]-------------------------[/COLOR][COLOR=yellow]-------------------------[/COLOR][COLOR=orange]-------------------------[/COLOR][COLOR=red]-------------------------[/COLOR][CR]%s[CR][CR]%s"%(ADDON_VERSION,loops, benchtime, plat, stat, arrow, back))
+
+def repeat_to_length(string_to_expand, length):
+   return (string_to_expand * ((length/len(string_to_expand))+1))[:length]
 
 def pystones(loops=LOOPS):
     return Proc0(loops)
