@@ -548,7 +548,7 @@
     </extension>
 </addon>
 
-<addon id="script.pystone.benchmark" name="CPU Benchmark" version="1.1.0" provider-name="Lunatixz">
+<addon id="script.pystone.benchmark" name="CPU Benchmark" version="1.1.0a" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
     </requires>
@@ -561,12 +561,9 @@
         <license>The MIT License (MIT)</license>
         <platform>all</platform>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/script.pystone.benchmark</source>
-        <email>pseudotvlive@gmail.com</email>
-        <forum>http://forum.kodi.tv/</forum>
         <news></news>
         <assets>
             <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
