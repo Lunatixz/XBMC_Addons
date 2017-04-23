@@ -25,14 +25,15 @@ REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
-ICON = os.path.join(ADDON_PATH, 'icon.png')
-FANART = os.path.join(ADDON_PATH, 'fanart.jpg')
 LANGUAGE = REAL_SETTINGS.getLocalizedString
 DEBUG = REAL_SETTINGS.getSetting('enableDebug') == "true"
 
 def log(msg, level = xbmc.LOGDEBUG):
-    if DEBUG == True:
-        xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + str(msg), level)
+    if DEBUG == False and level != xbmc.LOGERROR:
+        return
+    elif level == xbmc.LOGERROR:
+        msg += ' ,' + traceback.format_exc()
+    xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + str(msg), level)
        
 def ascii(string):
     if isinstance(string, basestring):
@@ -48,7 +49,7 @@ def uni(string):
            string = ascii(string)
     return string
      
-def loadJson(string, encode='utf-8'):
+def loadJson(string):
     if len(string) == 0:
         return {}
     try:
@@ -106,6 +107,7 @@ class Service():
         self.Player.subFound = False
         self.Monitor.searchSub = REAL_SETTINGS.getSetting('searchSub') == "true"
         self.Monitor.enableCC =  REAL_SETTINGS.getSetting('enableCC') == "true"
+        self.searchSub = self.Monitor.searchSub
         self.start()
 
         
@@ -140,10 +142,12 @@ class Service():
         
     def setMute(self, state):
         log("setMute = " + str(state))
-        while self.isMute() != bool(state):
+        bailout = 0
+        while self.isMute() != bool(state) and bailout < 13:
+            bailout += 1
             json_query = '{"jsonrpc":"2.0","method":"Application.SetMute","params":{"mute":%s},"id":1}' %str(state).lower()
             sendJSON(json_query)
-            xbmc.sleep(1000)
+            xbmc.sleep(500)
             
               
     def getCC(self):
@@ -173,6 +177,13 @@ class Service():
             if self.Player.isPlayingVideo() == True:
                 log("autoSub = " + str(self.autoSub))
                 log("subFound = " + str(self.Player.subFound))
+                
+                if xbmcgui.Window(10000).getProperty("PseudoTVRunning") == "True":
+                    self.searchSub = self.Monitor.searchSub
+                    self.Monitor.searchSub = False
+                else:
+                    self.Monitor.searchSub = self.searchSub
+                
                 '''
                     missing subs return false positive isSubtitle = True,
                     compare with hasSubtitle to detect true status.

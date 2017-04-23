@@ -25,5 +25,5 @@ msgid "Enable PVR Closed Captioning"
 msgstr ""
 
 msgctxt "#32003"
-msgid "Search Missing Subtitles"
+msgid "Search for Missing Subtitles"
 msgstr ""
