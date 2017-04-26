@@ -47,6 +47,28 @@
     </extension>
 </addon>
 
+<addon id="plugin.video.filmrisetv" version="1.0.0" name="FilmRise - YouTube" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="plugin.video.youtube" version="5.3.10"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">FilmRise acquires and distributes movies and TV series for worldwide release in all media.</summary>
+        <description lang="en_GB">FilmRise delivers unlimited FREE instant streaming of popular movies and hit TV shows. Choose from our extensive collection of movies and TV spanning all genres – available absolutely free with no subscription. All FilmRise movies and TV shows are available instantly. For more information and high quality film and TV entertainment, please visit FilmRise.com.</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.filmriseTV</source>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="plugin.video.ispot" version="1.1.2" name="iSpot TV Adverts" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
@@ -159,36 +181,6 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.theparamountvault" version="1.0.0" name="The Paramount Vault" provider-name="Lunatixz">
-    <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
-        <import addon="script.module.requests" version="2.7.0"/>
-        <import addon="script.module.simplecache" version="1.0.0"/>
-        <import addon="script.module.feedparser" version="5.1.3"/>
-        <import addon="script.module.beautifulsoup" version="3.2.1"/>
-        <import addon="plugin.video.youtube" version="5.1.8"/>
-        <import addon="script.module.metahandler" version="2.9.0" optional="true"/>
-        <import addon="script.module.skin.helper.artutils" version="1.0.0" optional="true"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="default.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">The Paramount Vault</summary>
-        <description lang="en_GB">The Paramount Vault showcases a collection of Paramount full-length films and clips including selections that range from black-and-white to color, comedy to horror, and everything in between. Viewers are invited to explore the vast landscape of cinema’s history, share their favorite films, and discover new ones through this official channel created by Paramount Pictures.</description>
-        <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.theparamountvault</source>
-        <website>http://kodi.tv</website>
-        <forum>http://forum.kodi.tv/</forum>
-        <news></news>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-
 <addon id="repository.lunatixz" name="Lunatixz Repo" version="1.0" provider-name="Lunatixz">
     <extension point="xbmc.addon.repository" name="Official PseudoTV Live Repository">
         <info compressed="false">http://raw.github.com/Lunatixz/XBMC_Addons/master/addons.xml</info>
@@ -243,6 +235,8 @@
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
+            <screenshot>screenshot01.png</screenshot>
+            <screenshot>screenshot02.png</screenshot>
         </assets>
     </extension>
 </addon>
@@ -261,26 +255,6 @@
         <disclaimer lang="en" >This software is a BETA release, bugs maybe common until final release.</disclaimer>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-    </extension>
-</addon>
-
-<addon id="script.mirror.service" version="0.0.5" name="Kodi Mirror" provider-name="Lunatixz">
-    <requires>
-        <import addon="xbmc.python" version="2.14.0"/>
-        <import addon="script.module.requests" version="2.7.0"/>
-    </requires>
-	<extension point="xbmc.python.script" library="main.py"/>
-    <extension point="xbmc.service" library="service.py" start="startup"/>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Mirror playback to Multiple Kodi instances</summary>
-        <description lang="en">Create a Multiroom Kodi experience, Mirror one Kodi to Multiple instances throughout your house </description>
-        <disclaimer lang="en" >This software is a BETA release, bugs maybe common until final release.</disclaimer>
-        <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/script.mirror.service</source>
-        <email>pseudotvlive@gmail.com</email>
-        <website>www.pseudotvlive.com</website>
-        <forum>http://pseudotvlive.com/index.php/forum</forum>
     </extension>
 </addon>
 
@@ -593,6 +567,7 @@
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>
+            <screenshot>screenshot01.png</screenshot>
         </assets>
     </extension>
 </addon>
@@ -631,11 +606,34 @@
     <extension point="xbmc.service" library="service.py" start="startup"/>
 </addon>
 
+<addon id="service.mediamirror" version="0.0.1" name="Media Mirror" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="script.module.requests" version="2.7.0"/>
+    </requires>
+    <extension point="xbmc.python.script" library="settings.py"/>
+    <extension point="xbmc.service" library="service.py" start="startup"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB"></summary>
+        <description lang="en_GB"></description>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <platform>all</platform>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/service.mediamirror</source>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="service.onmute" version="0.0.1" name="OnMute" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplejson" version="3.3.0"/>
     </requires>
+    <extension point="xbmc.python.script" library="settings.py"/>
     <extension point="xbmc.service" library="service.py" start="startup"/>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">Enable closed captioning and subtitles "OnMute".</summary>
