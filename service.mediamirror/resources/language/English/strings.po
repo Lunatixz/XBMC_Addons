@@ -44,3 +44,7 @@ msgctxt "#32007"
 msgid "Calculated Network Latency (milliseconds)"
 msgstr ""
 
+msgctxt "#32008"
+msgid "Adjust client offsets automatically"
+msgstr ""
+
