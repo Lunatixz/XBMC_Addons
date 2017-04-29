@@ -216,6 +216,28 @@
     </extension>
 </addon>
 
+<addon id="screensaver.flipclock" name="Flip Clock" version="1.0.0" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+    </requires>
+	<extension point="xbmc.ui.screensaver" library="default.py"/>
+    <extension point="xbmc.python.script"  library="default.py"/>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Flip clock screensaver.</summary>
+        <description lang="en_GB">Flip clock screensaver.</description>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <platform>all</platform>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/screensaver.flipclock</source>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>screenshot01.png</screenshot>
+            <screenshot>screenshot02.png</screenshot>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="script.enableit" version="0.0.2" name="Enable it!" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
@@ -260,32 +282,6 @@
             <screenshot>screenshot01.png</screenshot>
             <screenshot>screenshot02.png</screenshot>
         </assets>
-    </extension>
-</addon>
-
-<addon id="script.module.metadatautils"
-       name="Metadata and Artwork module"
-       version="1.0.5"
-       provider-name="marcelveldt">
-    <requires>
-        <import addon="xbmc.python" version="2.24.0"/>
-        <import addon="script.module.requests" version="2.3.0"/>
-        <import addon="script.module.beautifulsoup" version="3.0.8" />
-        <import addon="script.module.thetvdb" version="0.0.1" />
-        <import addon="script.module.musicbrainz" version="0.0.1" />
-        <import addon="script.module.simplecache" version="1.0.0"/>
-        <import addon="script.module.arrow" version="0.6.0"/>
-    </requires>
-    <extension point="xbmc.python.module" library="lib" />
-    <extension point="xbmc.addon.metadata">
-        <summary>Metadata and artwork from common sources like TMDB, IMDB, TADB and fanart.tv </summary>
-        <description>
-            The metadata and artwork module for Kodi provides rich metadata, including artwork for
-            various metatypes by scraping (and caching) this information from sites like TMDB, musicbrainz and fanart.tv.
-        </description>
-        <license>Apache 2.0</license>
-        <source>https://github.com/marcelveldt/script.module.metadatautils</source>
-        <platform>all</platform>
     </extension>
 </addon>
 
@@ -365,46 +361,6 @@
         <assets>
             <icon>icon.png</icon>
         </assets>
-    </extension>
-</addon>
-
-<addon id="script.module.simplecache" name="Simple Cache Module" version="1.0.10" provider-name="marcelveldt">
-    <requires>
-        <import addon="xbmc.python" version="2.24.0"/>
-    </requires>
-    <extension point="xbmc.python.module" library="lib" />
-    <extension point="xbmc.addon.metadata">
-        <summary>Provides a simple file- and memory based cache for Kodi addons</summary>
-        <description>Provides a simple file- and memory based cache for Kodi addons</description>
-        <license>Apache 2.0</license>
-        <source>https://github.com/marcelveldt/script.module.simplecache</source>
-        <platform>all</platform>
-    </extension>
-</addon>
-
-<addon id="script.module.skin.helper.artutils"
-       name="Skin Helper Artwork and metadata Module"
-       version="1.0.19"
-       provider-name="marcelveldt">
-    <requires>
-        <import addon="xbmc.python" version="2.24.0"/>
-        <import addon="script.module.requests" version="2.3.0"/>
-        <import addon="script.module.beautifulsoup" version="3.0.8" />
-        <import addon="script.module.thetvdb" version="0.0.1" />
-        <import addon="script.module.musicbrainz" version="0.0.1" />
-        <import addon="script.module.simplecache" version="1.0.0"/>
-        <import addon="script.module.arrow" version="0.6.0"/>
-    </requires>
-    <extension point="xbmc.python.module" library="lib" />
-    <extension point="xbmc.addon.metadata">
-        <summary>Metadata and artwork from common sources TMDB, IMDB and fanart.tv </summary>
-        <description>
-            The Skin Helper artwork and metadata module provides rich metadata, including artwork for
-            various metatypes by scraping this information from sites like TMDB, musicbrainz and fanart.tv.
-        </description>
-        <license>Apache 2.0</license>
-        <source>https://github.com/marcelveldt/script.module.skin.helper.artutils</source>
-        <platform>all</platform>
     </extension>
 </addon>
 
@@ -653,7 +609,6 @@
 <addon id="service.onmute" version="0.0.1" name="OnMute" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
     </requires>
     <extension point="xbmc.python.script" library="settings.py"/>
     <extension point="xbmc.service" library="service.py" start="startup"/>

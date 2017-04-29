@@ -22,10 +22,7 @@ import xbmc, xbmcplugin, xbmcaddon, xbmcgui
 # Plugin Info
 ADDON_ID = 'service.onmute'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
-ADDON_NAME = REAL_SETTINGS.getAddonInfo('name')
-ADDON_PATH = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
 ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
-LANGUAGE = REAL_SETTINGS.getLocalizedString
 DEBUG = REAL_SETTINGS.getSetting('enableDebug') == "true"
 
 def log(msg, level = xbmc.LOGDEBUG):
@@ -140,17 +137,7 @@ class Service():
         log("isMute = " + str(state))
         return state
 
-        
-    def setMute(self, state):
-        log("setMute = " + str(state))
-        bailout = 0
-        while self.isMute() != bool(state) and bailout < 13:
-            bailout += 1
-            json_query = '{"jsonrpc":"2.0","method":"Application.SetMute","params":{"mute":%s},"id":1}' %str(state).lower()
-            sendJSON(json_query)
-            xbmc.sleep(500)
-            
-              
+
     def getCC(self):
         # save user parsecaptions settings prior to change
         state = False
@@ -190,7 +177,8 @@ class Service():
                     compare with hasSubtitle to detect true status.
                 '''
                 # check if user has subs already enabled.
-                if (self.isSubtitle() + self.hasSubtitle()) > 1 and self.isMute() == True and self.autoSub == False:
+                if self.isSubtitle() == True and self.hasSubtitle() == True and self.isMute() == True and self.autoSub == False:
+                    self.Monitor.waitForAbort(2)
                     continue
                     
                 # on mute if subs are disabled, enable them.
@@ -206,7 +194,7 @@ class Service():
                     self.autoSub = False
                     self.setSubtitle(False)
                     
-            if self.Monitor.waitForAbort(1):
+            if self.Monitor.waitForAbort(2):
                 break
              
         # restore users closed caption preference .
