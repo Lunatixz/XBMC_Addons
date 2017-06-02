@@ -43,6 +43,7 @@ ONDEMAND    = REAL_SETTINGS.getSetting('Enable_OnDemand') == 'true'
 HIDE_PLUTO  = REAL_SETTINGS.getSetting("Hide_Ads") == "true"
 COOKIE_JAR  = xbmc.translatePath(os.path.join(SETTINGS_LOC, "cookiejar.lwp"))
 PTVL_RUN    = xbmcgui.Window(10000).getProperty('PseudoTVRunning') == 'True'
+IGNORE_KEYS = ['pluto.tv','plutotv','pluto tv','promo']
 YTURL       = 'plugin://plugin.video.youtube/play/?video_id='
 VMURL       = 'plugin://plugin.video.vimeo/play/?video_id='
 BASE_URL    = 'http://pluto.tv/'#'http://silo.pluto.tv/'
@@ -118,11 +119,16 @@ class PlutoTV():
         if USER_EMAIL != '':
             form_data = ({'optIn': 'true', 'password': PASSWORD,'synced': 'false', 'userIdentity': USER_EMAIL})
             self.net.set_cookies(COOKIE_JAR)
-            loginlink = self.loadJson(self.net.http_POST(BASE_API + '/auth/local', form_data=form_data, headers=header_dict).content.encode("utf-8").rstrip())
-            if loginlink['email'].lower() == USER_EMAIL.lower() and PTVL_RUN == False:
-                xbmcgui.Dialog().notification(ADDON_NAME, 'Welcome Back %s' % loginlink['displayName'], ICON, 4000)
-            self.net.save_cookies(COOKIE_JAR)
-        return True
+            try:
+                loginlink = self.loadJson(self.net.http_POST(BASE_API + '/auth/local', form_data=form_data, headers=header_dict).content.encode("utf-8").rstrip())
+                if loginlink and loginlink['email'].lower() == USER_EMAIL.lower():
+                    xbmcgui.Dialog().notification(ADDON_NAME, 'Welcome Back %s' % loginlink['displayName'], ICON, 4000)
+                    self.net.save_cookies(COOKIE_JAR)
+                    return True
+                else:
+                    raise Exception()
+            except Exception,e:
+                xbmcgui.Dialog().notification(ADDON_NAME, 'Invalid User Credentials', ICON, 4000)
     
     
     @use_cache(1)
@@ -190,12 +196,12 @@ class PlutoTV():
             id     = channel['_id']
             cat    = channel['category']
             number = channel['number']
-            region = channel['regionFilter']['include']
+            region = channel['regionFilter']['exclude']
             name   = channel['name']
             plot   = channel['description']
             feat   = (channel.get('featured','') or 0) == -1
 
-            if FIT_REGION == True and USER_REGION not in region:
+            if FIT_REGION == True and USER_REGION in region:
                 continue
             
             thumb = ICON
@@ -330,7 +336,7 @@ class PlutoTV():
             dur_start = dur_sum
             dur_sum  += dur
 
-            if HIDE_PLUTO == True and name.lower() in ['pluto.tv','plutotv','pluto tv','promo']:
+            if HIDE_PLUTO == True and any(k in name.lower() for k in IGNORE_KEYS):
                 continue
                 
             liz=xbmcgui.ListItem(name, path=url)
@@ -383,7 +389,7 @@ class PlutoTV():
             dur_start = dur_sum
             dur_sum  += dur
 
-            if HIDE_PLUTO == True and name.lower() in ['pluto.tv','plutotv','pluto tv','promo']:
+            if HIDE_PLUTO == True and any(k in name.lower() for k in IGNORE_KEYS):
                 continue
                 
             liz=xbmcgui.ListItem(name, path=url)
