@@ -296,7 +296,7 @@ class PlutoTV():
     def playChannel(self, name, url):
         log('playChannel')
         origurl = url
-        if PTVL_RUN == False:
+        if PTVL_RUN == True:
             return
             
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
