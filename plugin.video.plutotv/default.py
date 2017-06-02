@@ -338,10 +338,8 @@ class PlutoTV():
             if dur_start < ch_timediff and dur_sum > ch_timediff:
                 vid_offset = ch_timediff - dur_start
                 liz.setProperty('ResumeTime', str(vid_offset) )
-                playlist.add(url, liz, idx)
-                
+                playlist.add(url, liz, idx) 
             xbmc.Player().play(playlist)
-            xbmc.executebuiltin("ActivateWindow(fullscreenvideo)")
            
      
     def playContent(self, name, url):
