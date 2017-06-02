@@ -40,7 +40,6 @@ USER_EMAIL  = REAL_SETTINGS.getSetting('User_Email')
 PASSWORD    = REAL_SETTINGS.getSetting('User_Password')
 FIT_REGION  = REAL_SETTINGS.getSetting('Filter_Region') == 'true'
 DEBUG       = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
-ONDEMAND    = REAL_SETTINGS.getSetting('Enable_OnDemand') == 'true'
 HIDE_PLUTO  = REAL_SETTINGS.getSetting("Hide_Ads") == "true"
 COOKIE_JAR  = xbmc.translatePath(os.path.join(SETTINGS_LOC, "cookiejar.lwp"))
 PTVL_RUN    = xbmcgui.Window(10000).getProperty('PseudoTVRunning') == 'True'
@@ -219,31 +218,18 @@ class PlutoTV():
                 title = "%s - %s: %s" % (cat, number, name)
                 infoLabels ={"label":title ,"title":title  ,"plot":plot, "code":number, "genre":cat, "imdbnumber":id}
                 infoArt    ={"thumb":thumb,"poster":thumb,"fanart":land,"icon":logo,"logo":logo}
-                
-                if PTVL_RUN == True or ONDEMAND == True:
-                    self.addDir(title, id, 8, infoLabels, infoArt)
-                else:
-                    self.addLink(title, id, 8, infoLabels, infoArt, len(data))
-                    
+                self.addDir(title, id, 8, infoLabels, infoArt)
             elif chname == "Featured" and feat == True:
                 title = "%s - %s: %s" % (cat, number, name)
                 infoLabels ={"label":title ,"title":title  ,"plot":plot, "code":number, "genre":cat, "imdbnumber":id}
                 infoArt    ={"thumb":thumb,"poster":thumb,"fanart":land,"icon":logo,"logo":logo}
-                
-                if PTVL_RUN == True or ONDEMAND == True:
-                    self.addDir(title, id, 8, infoLabels, infoArt)
-                else:
-                    self.addLink(title, id, 8, infoLabels, infoArt, len(data))
+                self.addDir(title, id, 8, infoLabels, infoArt)
                     
             elif chname.lower() == cat.lower():
                 title = "%s: %s" % (number, name)
                 infoLabels ={"label":title ,"title":title  ,"plot":plot, "code":number, "genre":cat, "imdbnumber":id}
                 infoArt    ={"thumb":thumb,"poster":thumb,"fanart":land,"icon":logo,"logo":logo}
-            
-                if PTVL_RUN == True or ONDEMAND == True:
-                    self.addDir(title, id, 8, infoLabels, infoArt)
-                else:
-                    self.addLink(title, id, 8, infoLabels, infoArt, len(data))
+                self.addDir(title, id, 8, infoLabels, infoArt)
             
             
     def pagination(self, seq, rowlen):
@@ -309,6 +295,57 @@ class PlutoTV():
      
     def playChannel(self, name, url):
         log('playChannel')
+        origurl = url
+        if PTVL_RUN == False:
+            return
+            
+        playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+        playlist.clear()
+        if not 'sched' in url:
+            t1   = datetime.datetime.now().strftime('%Y-%m-%dT%H:00:00')
+            t2   = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%dT%H:00:00')
+            link = self.loadJson(self.openURL(BASE_GUIDE % (t1,t2)))
+            item = link[origurl][0]
+            id = item['episode']['_id']
+            ch_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(item["start"].replace('.000Z','').replace('T',' '), "%Y-%m-%d %H:%M:%S")))
+            ch_timediff = (datetime.datetime.now() - ch_start).seconds
+        else:
+            id = url.replace('sched','')
+
+        data = self.loadJson(self.openURL(BASE_CLIPS %(id)))
+        dur_sum  = 0
+        for idx, field in enumerate(data):
+            url       = (field['url'] or field['code'])
+            name      = field['name']
+            thumb     = (field['thumbnail'] or ICON)
+            provider  = field['provider']
+            url       = self.resolveURL(provider, url)
+            dur       = int(field['duration'] or '0') // 1000
+            dur_start = dur_sum
+            dur_sum  += dur
+
+            if HIDE_PLUTO == True and any(k in name.lower() for k in IGNORE_KEYS):
+                continue
+                
+            liz=xbmcgui.ListItem(name, path=url)
+            infoList = {"label":name,"title":name,"duration":dur}
+            infoArt  = {"thumb":thumb,"poster":thumb,"icon":ICON,"fanart":FANART}
+            liz.setInfo(type="Video", infoLabels=infoList)
+            liz.setArt(infoArt)
+            liz.setProperty("IsPlayable","true")
+            liz.setProperty("IsInternetStream",str(field['liveBroadcast']).lower())
+
+            if dur_start < ch_timediff and dur_sum > ch_timediff:
+                vid_offset = ch_timediff - dur_start
+                liz.setProperty('ResumeTime', str(vid_offset) )
+                playlist.add(url, liz, idx)
+                
+            xbmc.Player().play(playlist)
+            xbmc.executebuiltin("ActivateWindow(fullscreenvideo)")
+           
+     
+    def playContent(self, name, url):
+        log('playContent')
         origurl = url            
         if not 'sched' in url:
             t1   = datetime.datetime.now().strftime('%Y-%m-%dT%H:00:00')
@@ -347,54 +384,8 @@ class PlutoTV():
             if dur_start < ch_timediff and dur_sum > ch_timediff:
                 vid_offset = ch_timediff - dur_start
                 liz.setProperty('ResumeTime', str(vid_offset) )
-            xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
-               
-    def playContent(self, name, url):
-        log('playContent')
-        origurl = url
-        if not 'sched' in url:
-            t1   = datetime.datetime.now().strftime('%Y-%m-%dT%H:00:00')
-            t2   = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%dT%H:00:00')
-            link = self.loadJson(self.openURL(BASE_GUIDE % (t1,t2)))
-            item = link[origurl][0]
-            id = item['episode']['_id']
-            ch_start = datetime.datetime.fromtimestamp(time.mktime(time.strptime(item["start"].replace('.000Z','').replace('T',' '), "%Y-%m-%d %H:%M:%S")))
-            ch_timediff = (datetime.datetime.now() - ch_start).seconds
-        else:
-            id = url.replace('sched','')
-
-        data = self.loadJson(self.openURL(BASE_CLIPS %(id)))
-        dur_sum  = 0
-        for idx, field in enumerate(data):
-            url       = (field['url'] or field['code'])
-            name      = field['name']
-            thumb     = (field['thumbnail'] or ICON)
-            provider  = field['provider']
-            url       = self.resolveURL(provider, url)
-            dur       = int(field['duration'] or '0') // 1000
-            dur_start = dur_sum
-            dur_sum  += dur
-
-            if HIDE_PLUTO == True and any(k in name.lower() for k in IGNORE_KEYS):
-                continue
-                
-            liz=xbmcgui.ListItem(name, path=url)
-            infoList = {"label":name,"title":name,"duration":dur}
-            infoArt  = {"thumb":thumb,"poster":thumb,"icon":ICON,"fanart":FANART}
-            liz.setInfo(type="Video", infoLabels=infoList)
-            liz.setArt(infoArt)
-            liz.setProperty("IsPlayable","true")
-            liz.setProperty("IsInternetStream",str(field['liveBroadcast']).lower())
-
-            if dur_start < ch_timediff and dur_sum > ch_timediff:
-                vid_offset = ch_timediff - dur_start
-                liz.setProperty('ResumeTime', str(vid_offset) )
-            
-            if PTVL_RUN == True or ONDEMAND == True:
-                self.addLink(name, url, 7, infoList, infoArt, len(data))
-            else:
-                xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+            self.addLink(name, url, 7, infoList, infoArt, len(data))
 
            
     def playVideo(self, name, url, list=None):
