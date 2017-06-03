@@ -295,12 +295,13 @@ class PlutoTV():
      
     def playChannel(self, name, url):
         log('playChannel')
-        origurl = url
         if PTVL_RUN == True:
             return
             
+        origurl  = url
         playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
         playlist.clear()
+        
         if not 'sched' in url:
             t1   = datetime.datetime.now().strftime('%Y-%m-%dT%H:00:00')
             t2   = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%dT%H:00:00')
@@ -337,10 +338,10 @@ class PlutoTV():
 
             if dur_start < ch_timediff and dur_sum > ch_timediff:
                 vid_offset = ch_timediff - dur_start
-                liz.setProperty('ResumeTime', str(vid_offset) )
-                playlist.add(url, liz, idx) 
-            xbmc.Player().play(playlist)
-           
+                liz.setProperty('ResumeTime', str(vid_offset))
+            playlist.add(url, liz, idx)
+            xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+
      
     def playContent(self, name, url):
         log('playContent')
@@ -382,7 +383,6 @@ class PlutoTV():
             if dur_start < ch_timediff and dur_sum > ch_timediff:
                 vid_offset = ch_timediff - dur_start
                 liz.setProperty('ResumeTime', str(vid_offset) )
-
             self.addLink(name, url, 7, infoList, infoArt, len(data))
 
            
