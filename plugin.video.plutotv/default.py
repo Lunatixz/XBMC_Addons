@@ -109,14 +109,15 @@ class PlutoTV():
         header_dict['Referer']    = 'http://pluto.tv/'
         header_dict['Origin']     = 'http://pluto.tv'
         header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; rv:24.0) Gecko/20100101 Firefox/24.0'
-        
-        if xbmcvfs.exists(COOKIE_JAR) == False:
-            try:
-                xbmcvfs.mkdirs(COOKIE_JAR)
-            except:
-                log('Unable to create the storage directory', xbmc.LOGERROR)
 
         if USER_EMAIL != '':
+                    
+            if xbmcvfs.exists(COOKIE_JAR) == False:
+                try:
+                    xbmcvfs.mkdirs(COOKIE_JAR)
+                except:
+                    log('Unable to create the storage directory', xbmc.LOGERROR)
+
             form_data = ({'optIn': 'true', 'password': PASSWORD,'synced': 'false', 'userIdentity': USER_EMAIL})
             self.net.set_cookies(COOKIE_JAR)
             try:
@@ -134,22 +135,26 @@ class PlutoTV():
     @use_cache(1)
     def openURL(self, url):
         log('openURL, url = ' + url)
-        header_dict               = {}
-        header_dict['Accept']     = 'application/json, text/javascript, */*; q=0.01'
-        header_dict['Host']       = 'api.pluto.tv'
-        header_dict['Connection'] = 'keep-alive'
-        header_dict['Referer']    = 'http://pluto.tv/'
-        header_dict['Origin']     = 'http://pluto.tv'
-        header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; rv:24.0) Gecko/20100101 Firefox/24.0'
-        self.net.set_cookies(COOKIE_JAR)
-        trans_table = ''.join( [chr(i) for i in range(128)] + [' '] * 128 )
         try:
-            req = self.net.http_GET(url, headers=header_dict).content.encode("utf-8", 'ignore')
+            header_dict               = {}
+            header_dict['Accept']     = 'application/json, text/javascript, */*; q=0.01'
+            header_dict['Host']       = 'api.pluto.tv'
+            header_dict['Connection'] = 'keep-alive'
+            header_dict['Referer']    = 'http://pluto.tv/'
+            header_dict['Origin']     = 'http://pluto.tv'
+            header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; rv:24.0) Gecko/20100101 Firefox/24.0'
+            self.net.set_cookies(COOKIE_JAR)
+            trans_table = ''.join( [chr(i) for i in range(128)] + [' '] * 128 )
+            try:
+                req = self.net.http_GET(url, headers=header_dict).content.encode("utf-8", 'ignore')
+            except:
+                req = self.net.http_GET(url, headers=header_dict).content.translate(trans_table)
+            self.net.save_cookies(COOKIE_JAR)
+            return req
         except:
-            req = self.net.http_GET(url, headers=header_dict).content.translate(trans_table)
-        self.net.save_cookies(COOKIE_JAR)
-        return req
-
+            xbmcgui.Dialog().notification(ADDON_NAME, 'Unable to Connect, Check User Credentials', ICON, 4000)
+            return '{}'
+        
         
     def loadJson(self, string):
         if len(string) == 0:
@@ -260,14 +265,13 @@ class PlutoTV():
             t2   = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%dT%H:00:00')
             link = self.loadJson(self.openURL(BASE_GUIDE % (t1,t2)))
             item = link[chid][0]
-
             epid      = (item['episode']['_id'])
             epname    = item['episode']['name']
             epplot    = item['episode']['description']
             epgenre   = item['episode']['genre']
             epdur     = int(item['episode']['duration'] or '0') // 1000
             live      = item['episode']['liveBroadcast']
-            thumb     = (item['episode']['thumbnail']['path'] or chthumb)
+            thumb     = chthumb #(item['episode']['thumbnail']['path'] or chthumb) #site doesn't update missing episode thumbs
 
             title = "%s: %s - %s" % (chnum, chname, epname)
             infoLabels ={"label":title ,"title":title  ,"plot":epplot, "code":epid, "genre":epgenre, "imdbnumber":chid, "duration":epdur}
@@ -360,6 +364,7 @@ class PlutoTV():
         data = self.loadJson(self.openURL(BASE_CLIPS %(id)))
         dur_sum  = 0
         for idx, field in enumerate(data):
+            print field
             url       = (field['url'] or field['code'])
             name      = field['name']
             thumb     = (field['thumbnail'] or ICON)
