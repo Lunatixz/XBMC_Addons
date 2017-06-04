@@ -96,10 +96,8 @@ class PlutoTV():
         self.net          = net.Net()
         self.cache        = SimpleCache()
         self.categoryMenu = self.getCategories()
-        self.login()
         
         
-    @use_cache(1)
     def login(self):
         log('login')
         header_dict               = {}
@@ -110,8 +108,7 @@ class PlutoTV():
         header_dict['Origin']     = 'http://pluto.tv'
         header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; rv:24.0) Gecko/20100101 Firefox/24.0'
 
-        if USER_EMAIL != '':
-                    
+        if len(USER_EMAIL) > 0:
             if xbmcvfs.exists(COOKIE_JAR) == False:
                 try:
                     xbmcvfs.mkdirs(COOKIE_JAR)
@@ -130,6 +127,7 @@ class PlutoTV():
                     raise Exception()
             except Exception,e:
                 xbmcgui.Dialog().notification(ADDON_NAME, 'Invalid User Credentials', ICON, 4000)
+        
     
     
     @use_cache(1)
@@ -167,6 +165,7 @@ class PlutoTV():
             
     def mainMenu(self):
         log('mainMenu')
+        self.login()
         for item in PLUTO_MENU:
             self.addDir(*item)
             

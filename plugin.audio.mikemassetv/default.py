@@ -22,7 +22,7 @@ import os, sys
 import xbmc, xbmcaddon, xbmcgui, xbmcplugin
 
 # Plugin Info
-ADDON_ID      = 'plugin.video.mikemassetv'
+ADDON_ID      = 'plugin.audio.mikemassetv'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 ADDON_NAME    = REAL_SETTINGS.getAddonInfo('name')
 ADDON_PATH    = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
