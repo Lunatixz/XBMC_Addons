@@ -21,7 +21,7 @@ import os, sys, time, datetime, net, requests, re, traceback
 import urllib, socket, json, urlresolver, collections
 import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
 
-from simplecache import use_cache, SimpleCache
+from simplecache import SimpleCache
 # Plugin Info
 ADDON_ID      = 'plugin.video.plutotv'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
@@ -179,8 +179,7 @@ class PlutoTV():
         for item in self.categoryMenu:
             self.addDir(*item)
             
-        
-    @use_cache(1)
+
     def getCategories(self):
         log('getCategories')
         collect= []
