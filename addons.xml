@@ -163,10 +163,11 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.newson" version="0.0.1" name="NewsOn" provider-name="Lunatixz">
+<addon id="plugin.video.newson" version="0.0.2" name="NewsOn" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
+        <import addon="script.module.feedparser" version="5.1.3"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
