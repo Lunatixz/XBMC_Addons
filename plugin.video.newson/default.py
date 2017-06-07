@@ -98,7 +98,7 @@ class NewsOn():
                 log(page.headers['content-type'])
                 results = json.load(page)
                 page.close()
-                self.cache.set(ADDON_NAME + 'openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=4))
+                self.cache.set(ADDON_NAME + 'openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=12))
             return self.cache.get(ADDON_NAME + 'openURL, url = %s'%url)
         except urllib2.URLError, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
