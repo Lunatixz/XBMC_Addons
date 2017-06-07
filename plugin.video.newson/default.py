@@ -93,16 +93,21 @@ class NewsOn():
             cacheResponce = self.cache.get(ADDON_NAME + 'openURL, url = %s'%url)
             if not cacheResponce:
                 request = urllib2.Request(url)
-                request.add_header('User-Agent','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
+                request.add_header('User-Agent','Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)')
                 page = urllib2.urlopen(request, timeout = 15)
-                self.cache.set(ADDON_NAME + 'openURL, url = %s'%url, json.loads(page.read()), expiration=datetime.timedelta(hours=1))
+                log(page.headers['content-type'])
+                results = json.load(page)
+                page.close()
+                self.cache.set(ADDON_NAME + 'openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=4))
             return self.cache.get(ADDON_NAME + 'openURL, url = %s'%url)
         except urllib2.URLError, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
         except socket.timeout, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
-
+        except:            
+            xbmcgui.Dialog().notification(ADDON_NAME, 'Site unreachable try again later...', ICON, 4000)
             
+        
     def mainMenu(self):
         log('mainMenu')
         for item in MENU:
@@ -121,6 +126,8 @@ class NewsOn():
         state     = []
         stateLST  = []
         data = self.openURL(BASE_API)
+        if not data:
+            return
         for channel in data:
             state.append(channel['config']['state'])
         states = collections.Counter(state)
@@ -134,6 +141,8 @@ class NewsOn():
         log('newsCasts, state = ' + state)
         urls = []
         data = self.openURL(BASE_API)
+        if not data:
+            return
         for channel in data:
             if state in channel['config']['state']:
                 chid   = channel['identifier']
