@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.newson" version="0.0.2" name="NewsOn" provider-name="Lunatixz">
+<addon id="plugin.video.newson" version="1.0.0" name="NewsON" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
@@ -15,7 +15,7 @@
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.newson</source>
         <website>http://watchnewson.com/</website>
-        <forum></forum>
+        <forum>https://forum.kodi.tv/showthread.php?tid=315924</forum>
         <news></news>
         <assets>
             <icon>icon.png</icon>
