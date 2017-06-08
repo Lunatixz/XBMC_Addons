@@ -35,7 +35,7 @@ NEWSART       = os.path.join(ADDON_PATH,'resources','images','newscast.jpg')
 CLIPART       = os.path.join(ADDON_PATH,'resources','images','videoclips.jpg')
 
 ## GLOBALS ##
-TIMEOUT     = 15
+TIMEOUT     = 30
 DEBUG       = True
 BASE_URL    = 'http://watchnewson.com/'
 BASE_API    = 'http://watchnewson.com/api/linear/channels'
@@ -90,22 +90,22 @@ class NewsOn():
         
     def openURL(self, url):
         try:
-            cacheResponce = self.cache.get(ADDON_NAME + 'openURL, url = %s'%url)
+            cacheResponce = self.cache.get(ADDON_NAME + '.openURL, url = %s'%url)
             if not cacheResponce:
                 request = urllib2.Request(url)
                 request.add_header('User-Agent','Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)')
-                page = urllib2.urlopen(request, timeout = 15)
+                page = urllib2.urlopen(request, timeout = TIMEOUT)
                 log(page.headers['content-type'])
                 results = json.load(page)
                 page.close()
-                self.cache.set(ADDON_NAME + 'openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=12))
-            return self.cache.get(ADDON_NAME + 'openURL, url = %s'%url)
+                self.cache.set(ADDON_NAME + '.openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=1))
+            return self.cache.get(ADDON_NAME + '.openURL, url = %s'%url)
         except urllib2.URLError, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
         except socket.timeout, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
         except:            
-            xbmcgui.Dialog().notification(ADDON_NAME, 'Site unreachable try again later...', ICON, 4000)
+            xbmcgui.Dialog().notification(ADDON_NAME, 'Site unreachable, try again later...', ICON, 4000)
             
         
     def mainMenu(self):
@@ -127,7 +127,7 @@ class NewsOn():
         stateLST  = []
         data = self.openURL(BASE_API)
         if not data:
-            return
+            return []
         for channel in data:
             state.append(channel['config']['state'])
         states = collections.Counter(state)
@@ -167,6 +167,8 @@ class NewsOn():
     def videoclips(self, state):
         log('videoclips, state = ' + state)
         data = self.openURL(BASE_API)
+        if not data:
+            return
         for channel in data:
             if state in channel['config']['state']:
                 chid   = channel['identifier']
@@ -194,13 +196,8 @@ class NewsOn():
                     infoLabels ={"label":title ,"title":title,"plot":plot}
                     infoArt    ={"thumb":thumb,"poster":thumb,"fanart":FANART,"icon":ICON,"logo":ICON} 
                     self.addLink(title, url, 9, infoLabels, infoArt)
-                            
-                                        
-    def pagination(self, seq, rowlen):
-        for start in xrange(0, len(seq), rowlen):
-            yield seq[start:start+rowlen]
 
-            
+                    
     def playVideo(self, name, url, list=None):
         log('playVideo')
         if not list:
