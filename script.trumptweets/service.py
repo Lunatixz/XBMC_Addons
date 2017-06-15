@@ -104,6 +104,13 @@ class Service():
             if self.myService.waitForAbort(WAIT_TIME) == True:
                 break
 
+                
+    def testString(self):
+        a = ''
+        for i in range(1,141):
+            a += 'W%s'%random.choice(['',' '])
+        return a
+        
 
     def chkFEED(self):
         log('chkFEED')
