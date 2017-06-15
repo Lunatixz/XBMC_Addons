@@ -1,11 +1,11 @@
 # Kodi Media Center language file
-# Addon Name: NewsON
-# Addon id: plugin.video.newson
+# Addon Name: Trump Tweets!!
+# Addon id: script.trumptweets
 # Addon Provider: Lunatixz
 msgid ""
 msgstr ""
-"Project-Id-Version: plugin.video.newson\n"
-"Report-Msgid-Bugs-To: http://forum.kodi.tv/showthread.php?tid=315924\n"
+"Project-Id-Version:\script.trumptweets\n"
+"Report-Msgid-Bugs-To: https://forum.kodi.tv/showthread.php?tid=316555\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lunatixz Translation Team\n"

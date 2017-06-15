@@ -17,7 +17,7 @@
 # along with Trump Tweets.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, gui, feedparser, datetime, random
-import xbmc, xbmcaddon, xbmcgui
+import xbmc, xbmcaddon, xbmcgui, traceback
 
 # Plugin Info
 ADDON_ID       = 'script.trumptweets'
@@ -31,10 +31,7 @@ FANART        = REAL_SETTINGS.getAddonInfo('fanart')
 LANGUAGE      = REAL_SETTINGS.getLocalizedString
 
 ## GLOBALS ##
-WAIT_TIME   = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
 DEBUG       = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
-IGNORE      = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
-RANDOM      = int(REAL_SETTINGS.getSetting('Enable_Random')) == 1
 BASE_FEED   = 'https://twitrss.me/twitter_user_to_rss/?user=realDonaldTrump'
 
 def log(msg, level=xbmc.LOGDEBUG):
@@ -73,30 +70,15 @@ def setProperty(str1, str2):
 
 def clearProperty(str):
     xbmcgui.Window(10000).clearProperty(stringify(str))
-  
-  
-class Monitor(xbmc.Monitor):
-    def __init__(self):
-        xbmc.Monitor.__init__(self, xbmc.Monitor())
-        
-        
-    def log(self, msg, level = xbmc.LOGDEBUG):
-        log('Monitor: ' + msg, level)
-        
-        
-    def onSettingsChanged(self):
-        self.log("onSettingsChanged")
-        WAIT_TIME   = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
-        DEBUG       = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
-        IGNORE      = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
-        RANDOM      = int(REAL_SETTINGS.getSetting('Enable_Random')) == 1
-
-        
+   
 class Service():
     def __init__(self):
         log('__init__')
-        self.myService = Monitor()
+        random.seed()
+        self.myService = xbmc.Monitor()
         while not self.myService.abortRequested():
+            WAIT_TIME = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
+            IGNORE = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
             if xbmc.Player().isPlayingVideo() == True and IGNORE == True:
                 self.myService.waitForAbort(WAIT_TIME)
                 continue
@@ -106,22 +88,25 @@ class Service():
 
                 
     def testString(self):
+        ''' 
+        gen. 140char mock sentence for skin test
+        '''
         a = ''
         for i in range(1,141):
             a += 'W%s'%random.choice(['',' '])
-        return a
+        return a[:140]
         
 
     def chkFEED(self):
         log('chkFEED')
-        feed  = feedparser.parse(BASE_FEED)
-        items = feed['entries']
-        index = {True:random.randint(0,(len(items)-1)),False:0}[RANDOM]
-        item  = items[index]
+        feed   = feedparser.parse(BASE_FEED)
+        items  = feed['entries']
+        index  = {True:random.randint(0,(len(items)-1)),False:0}[int(REAL_SETTINGS.getSetting('Enable_Random')) == 1]
+        item   = items[index]
         if item and 'summary_detail' in item:
             title = (stringify(item['title']).replace('\n','').replace('\t','').replace('\r','').rstrip())
             pdate = item.get('published','').split('+')[0].rstrip()
-            if getProperty('%s.pdate'%ADDON_ID) != pdate:
+            if getProperty('%s.pdate' %ADDON_ID) != pdate:
                 setProperty('%s.title'%ADDON_ID,title)
                 setProperty('%s.pdate'%ADDON_ID,pdate)
                 ui = gui.GUI("default.xml", ADDON_PATH, "default")

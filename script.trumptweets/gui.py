@@ -28,6 +28,7 @@ ADDON_PATH     = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
 SETTINGS_LOC   = REAL_SETTINGS.getAddonInfo('profile').decode('utf-8')
 CLOSE_TIME     = [2.0,5.0,10.0,15.0][int(REAL_SETTINGS.getSetting('Close_Time'))]
 
+## GLOBALS ##
 ID_LIST        = [30100,30200,30300]
 IMG_LIST       = {30101:'TrumpSign_%d.png'  %random.randint(1,4),
                   30201:'TrumpTweet_%d.png' %random.randint(1,5),
@@ -52,7 +53,7 @@ class GUI(xbmcgui.WindowXMLDialog):
         xpos, ypos = self.getControl(select).getPosition()
         width = self.getControl(select + 1).getWidth()
         xmax = 1920 - width
-        self.getControl(select).setPosition(random.randrange(xpos,xmax,int(width//2)), ypos)
+        self.getControl(select).setPosition(random.randrange(xpos,xmax,int(width//4)), ypos)
         self.getControl(select).setVisible(True)
         self.closeTimer.start()
 
