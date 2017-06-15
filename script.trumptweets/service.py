@@ -29,13 +29,12 @@ ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
 ICON          = REAL_SETTINGS.getAddonInfo('icon')
 FANART        = REAL_SETTINGS.getAddonInfo('fanart')
 LANGUAGE      = REAL_SETTINGS.getLocalizedString
-KODI_MONITOR   = xbmc.Monitor()
 
 ## GLOBALS ##
-WAIT_TIME   = [5,10,15,30][int(REAL_SETTINGS.getSetting('Wait_Time'))]
+WAIT_TIME   = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
 DEBUG       = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
 IGNORE      = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
-RANDOM      = REAL_SETTINGS.getSetting('Enable_Random') == '1'
+RANDOM      = int(REAL_SETTINGS.getSetting('Enable_Random')) == 1
 BASE_FEED   = 'https://twitrss.me/twitter_user_to_rss/?user=realDonaldTrump'
 
 def log(msg, level=xbmc.LOGDEBUG):
@@ -74,16 +73,35 @@ def setProperty(str1, str2):
 
 def clearProperty(str):
     xbmcgui.Window(10000).clearProperty(stringify(str))
+  
+  
+class Monitor(xbmc.Monitor):
+    def __init__(self):
+        xbmc.Monitor.__init__(self, xbmc.Monitor())
+        
+        
+    def log(self, msg, level = xbmc.LOGDEBUG):
+        log('Monitor: ' + msg, level)
+        
+        
+    def onSettingsChanged(self):
+        self.log("onSettingsChanged")
+        WAIT_TIME   = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
+        DEBUG       = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
+        IGNORE      = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
+        RANDOM      = int(REAL_SETTINGS.getSetting('Enable_Random')) == 1
 
+        
 class Service():
     def __init__(self):
         log('__init__')
-        while not KODI_MONITOR.abortRequested():
+        self.myService = Monitor()
+        while not self.myService.abortRequested():
             if xbmc.Player().isPlayingVideo() == True and IGNORE == True:
-                KODI_MONITOR.waitForAbort(WAIT_TIME)
+                self.myService.waitForAbort(WAIT_TIME)
                 continue
             self.chkFEED()
-            if KODI_MONITOR.waitForAbort(WAIT_TIME) == True:
+            if self.myService.waitForAbort(WAIT_TIME) == True:
                 break
 
 

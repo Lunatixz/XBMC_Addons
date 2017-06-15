@@ -16,9 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Trump Tweets.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, socket, json, os, random, threading
-import xbmc, xbmcaddon, xbmcvfs, xbmcgui, feedparser
-from simplecache import use_cache, SimpleCache
+import random, threading
+import xbmc, xbmcaddon, xbmcvfs, xbmcgui
 
 # Plugin Info
 ADDON_ID       = 'script.trumptweets'
@@ -51,8 +50,9 @@ class GUI(xbmcgui.WindowXMLDialog):
                 self.getControl(id).setVisible(False)
         self.getControl(select + 1).setImage(IMG_LIST[select + 1])
         xpos, ypos = self.getControl(select).getPosition()
-        xmax = self.getControl(select).getWidth() - self.getWidth()
-        self.getControl(select).setPosition(random.randint(xpos,xmax), ypos)
+        width = self.getControl(select + 1).getWidth()
+        xmax = 1920 - width
+        self.getControl(select).setPosition(random.randrange(xpos,xmax,int(width//2)), ypos)
         self.getControl(select).setVisible(True)
         self.closeTimer.start()
 
