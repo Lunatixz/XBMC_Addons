@@ -2,7 +2,6 @@
 """pycountry"""
 
 import os.path
-
 import pycountry.db
 
 try:
