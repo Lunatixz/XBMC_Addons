@@ -1,6 +1,5 @@
 # vim:fileencoding=utf-8
-
-import xbmcvfs
+from io import open
 import logging
 import json
 
@@ -63,10 +62,9 @@ class Database(object):
         self.data_class = type(
             self.data_class_name, (self.data_class_base,), {})
 
-        f = xbmcvfs.File(self.filename, 'r')
-        tree = json.load((f))
-        f.close()
-        
+        with open(self.filename, 'r', encoding="utf-8") as f:
+            tree = json.load(f)
+            
         for entry in tree[self.root_key]:
             obj = self.data_class(**entry)
             self.objects.append(obj)
