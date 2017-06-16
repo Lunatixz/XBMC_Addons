@@ -75,11 +75,14 @@ def stringify(string):
             string = string.encode('utf-8', 'ignore')
     return string
 
-def inputDialog(heading, default='', key=xbmcgui.INPUT_ALPHANUM, opt=0, close=0):
+def inputDialog(heading=ADDON_NAME, default='', key=xbmcgui.INPUT_ALPHANUM, opt=0, close=0):
     retval = xbmcgui.Dialog().input(heading, default, key, opt, close)
     if len(retval) > 0:
         return retval    
-    
+        
+def yesnoDialog(str1, str2='', str3='', header=ADDON_NAME, yes='', no='', autoclose=0):
+    return xbmcgui.Dialog().yesno(header, str1, str2, str3, no, yes, autoclose)
+     
 def getParams():
     param=[]
     if len(sys.argv[2])>=2:
@@ -114,7 +117,11 @@ class PlutoTV():
         header_dict['Referer']    = 'http://pluto.tv/'
         header_dict['Origin']     = 'http://pluto.tv'
         header_dict['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.2; rv:24.0) Gecko/20100101 Firefox/24.0'
-
+        
+        #ignore guest login
+        if USER_EMAIL == LANGUAGE(30009):
+            return
+            
         if len(USER_EMAIL) > 0:
             try:
                 #remove COOKIE_JAR Folder
@@ -142,9 +149,13 @@ class PlutoTV():
                     xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30007), ICON, 4000)
             except Exception,e:
                 log('login, Unable to create the storage directory ' + str(e), xbmc.LOGERROR)
+        
         else:
-            REAL_SETTINGS.setSetting('User_Email',inputDialog(LANGUAGE(30001)))
-            REAL_SETTINGS.setSetting('User_Password',inputDialog(LANGUAGE(30002)))
+            if yesnoDialog(LANGUAGE(30008),no=LANGUAGE(30009), yes=LANGUAGE(30010)):
+                REAL_SETTINGS.setSetting('User_Email',inputDialog(LANGUAGE(30001)))
+                REAL_SETTINGS.setSetting('User_Password',inputDialog(LANGUAGE(30002)))
+            else:
+                REAL_SETTINGS.setSetting('User_Email',LANGUAGE(30009))
             xbmc.executebuiltin('RunScript("' + ADDON_PATH + '/country.py' + '")')
             
             
