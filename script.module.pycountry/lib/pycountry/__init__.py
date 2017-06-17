@@ -3,17 +3,21 @@
 
 import os.path
 import pycountry.db
+import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
 
-try:
-    from pkg_resources import resource_filename
-except ImportError:
-    def resource_filename(package_or_requirement, resource_name):
-        return os.path.join(os.path.dirname(__file__), resource_name)
+# Plugin Info
+ADDON_ID      = 'script.module.pycountry'
+REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
+ADDON_NAME    = REAL_SETTINGS.getAddonInfo('name')
+SETTINGS_LOC  = REAL_SETTINGS.getAddonInfo('profile')
+ADDON_PATH    = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
+ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
+ICON          = REAL_SETTINGS.getAddonInfo('icon')
+FANART        = REAL_SETTINGS.getAddonInfo('fanart')
+LANGUAGE      = REAL_SETTINGS.getLocalizedString
 
-
-LOCALES_DIR = resource_filename('pycountry', 'locales')
-DATABASE_DIR = resource_filename('pycountry', 'databases')
-
+LOCALES_DIR  =  xbmc.translatePath(os.path.join(ADDON_PATH, 'lib', 'pycountry', 'locales'))
+DATABASE_DIR =  xbmc.translatePath(os.path.join(ADDON_PATH, 'lib', 'pycountry', 'databases'))
 
 class ExistingCountries(pycountry.db.Database):
     """Provides access to an ISO 3166 database (Countries)."""

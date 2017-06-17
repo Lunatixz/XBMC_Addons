@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.module.pycountry" version="17.5.14a" name="pycountry" provider-name="Lunatixz, Christian Theune">
+<addon id="script.module.pycountry" version="17.5.14b" name="pycountry" provider-name="Lunatixz, Christian Theune">
     <requires>
         <import addon="xbmc.python" version="2.25.0" />
     </requires>
