@@ -17,11 +17,10 @@
 # along with Haystack.TV.  If not, see <http://www.gnu.org/licenses/>.
 
 # -*- coding: utf-8 -*-
-import os, sys, time, datetime, re, traceback, urlresolver
-import urllib, urllib2, socket, json, collections, gzip
-import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
+import os, sys, datetime, re, traceback, urlresolver
+import urllib, urllib2, socket, json
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 
-from StringIO import StringIO
 from simplecache import SimpleCache
 from bs4 import BeautifulSoup
 
@@ -85,7 +84,7 @@ socket.setdefaulttimeout(TIMEOUT)
 class Haystack():
     def __init__(self):
         log('__init__')
-        self.cache   = SimpleCache()
+        self.cache = SimpleCache()
         self.getCategories()
 
         
@@ -95,12 +94,12 @@ class Haystack():
             if not cacheResponce:
                 request = urllib2.Request(url)
                 request.add_header('User-Agent','Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)')
-                responce = urllib2.urlopen(request, timeout = TIMEOUT)
-                soup = BeautifulSoup(responce.read())
+                response = urllib2.urlopen(request, timeout=TIMEOUT)
+                soup = BeautifulSoup(response.read())
                 data = (soup.find('script').text).rstrip()
                 data = (data.split('window.__INITIAL_STATE__ = ')[1]).replace(';','')
                 results = json.loads(data)
-                responce.close()
+                response.close()
                 self.cache.set(ADDON_NAME + '.openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=1))
             return self.cache.get(ADDON_NAME + '.openURL, url = %s'%url)
         except urllib2.URLError, e:
@@ -142,7 +141,7 @@ class Haystack():
             return self.resolveHAY(url)
         return (urlresolver.resolve(url) or url)
 
-
+        
     def getCategories(self):
         log('getCategories')
         responce = self.openURL(BASEURL)
@@ -158,8 +157,8 @@ class Haystack():
                 infoLabel['plotoutline'] = responce['environment']['sitemap'][item['relativeUrl']]['pageTitle'].replace(IGNORE,'.')
                 infoLabel['genre'] = responce['environment']['sitemap'][item['relativeUrl']]['alias']
                 self.catMenu.append((title,title,1,infoLabel))
-                
 
+            
     def getVideos(self, cat, today=True):
         log('getVideos')
         responce = self.openURL(BASEURL)
