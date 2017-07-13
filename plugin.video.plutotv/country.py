@@ -17,27 +17,42 @@
 # along with PlutoTV.  If not, see <http://www.gnu.org/licenses/>.
 
 # -*- coding: utf-8 -*-
-import pycountries
-import xbmcgui, xbmcaddon
+import os, json
+import xbmcgui, xbmcaddon, xbmcvfs
 
 # Plugin Info
 ADDON_ID      = 'plugin.video.plutotv'
 REAL_SETTINGS = xbmcaddon.Addon(id=ADDON_ID)
 ADDON_NAME    = REAL_SETTINGS.getAddonInfo('name')
+SETTINGS_LOC  = REAL_SETTINGS.getAddonInfo('profile')
+ADDON_PATH    = REAL_SETTINGS.getAddonInfo('path').decode('utf-8')
+ADDON_VERSION = REAL_SETTINGS.getAddonInfo('version')
+ICON          = REAL_SETTINGS.getAddonInfo('icon')
+FANART        = REAL_SETTINGS.getAddonInfo('fanart')
 LANGUAGE      = REAL_SETTINGS.getLocalizedString
-COUNTRY_LIST  = list(pycountries.countries)
 
+## GLOBALS ##
+USER_REGION   = REAL_SETTINGS.getSetting("Select_Country")
+ISO3166       = os.path.join(ADDON_PATH,'resources','iso3166-1.json')
+COUNTRY_LIST  = sorted((json.load(xbmcvfs.File(ISO3166)))['3166-1'], key=lambda x: x['name'])
+
+def getCurrentRegion():
+    for idx, country in enumerate(COUNTRY_LIST):
+        if country['alpha_2'] == USER_REGION:
+            return idx
+    return 0
+    
 def getCountryList():
     for country in COUNTRY_LIST:
-        yield (country.name)
+        yield (country['name'])
         
 def getAlpha2(idx):
-    if idx < 0 or not idx:
+    if idx is None or idx < 0:
         return 'US'
-    return str((COUNTRY_LIST[idx]).alpha_2)
+    return str((COUNTRY_LIST[idx])['alpha_2'])
         
 def selectDialog(list, header=ADDON_NAME):
-    select = xbmcgui.Dialog().select(LANGUAGE(30005), list)
+    select = xbmcgui.Dialog().select(LANGUAGE(30005), list, preselect=getCurrentRegion())
     if select > -1:
         return select
         

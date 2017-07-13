@@ -1,11 +1,11 @@
 # Kodi Media Center language file
-# Addon Name: Pluto.TV
-# Addon id: plugin.video.plutotv
+# Addon Name: Twitter Tweets
+# Addon id: script.twittertweets
 # Addon Provider: Lunatixz
 msgid ""
 msgstr ""
-"Project-Id-Version: plugin.video.plutotv\n"
-"Report-Msgid-Bugs-To: http://forum.kodi.tv/showthread.php?tid=315513\n"
+"Project-Id-Version:\script.twittertweets\n"
+"Report-Msgid-Bugs-To: https://forum.kodi.tv/showthread.php?tid=317791\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lunatixz Translation Team\n"
@@ -21,37 +21,41 @@ msgid "Enable Debugging [Log errors]"
 msgstr ""
 
 msgctxt "#30001"
-msgid "Enter User Email"
+msgid "Twitter Account"
 msgstr ""
 
 msgctxt "#30002"
-msgid "Enter User Password"
+msgid "Check Tweets Every x Minutes"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Close After x Seconds"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Some channels not available in your region"
+msgid "Don't Show While Playing"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Select User Region"
+msgid "General"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Welcome Back "
+msgid "Twitter (1)"
 msgstr ""
 
 msgctxt "#30007"
-msgid "Invalid User Credentials"
+msgid "Twitter (2)"
 msgstr ""
 
 msgctxt "#30008"
-msgid "Already have a Pluto.TV account?"
+msgid "Twitter (3)"
 msgstr ""
 
 msgctxt "#30009"
-msgid "Guest"
+msgid "Twitter (4)"
 msgstr ""
 
 msgctxt "#30010"
-msgid "Sign-In"
+msgid "Twitter (5)"
 msgstr ""
