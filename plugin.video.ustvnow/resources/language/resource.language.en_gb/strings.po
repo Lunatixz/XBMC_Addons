@@ -69,15 +69,15 @@ msgid "General"
 msgstr ""
 
 msgctxt "#30013"
-msgid "Account Activated:"
+msgid "Email Activated:"
 msgstr ""
 
 msgctxt "#30014"
-msgid "Free Plan:"
+msgid "Plan Type:"
 msgstr ""
 
 msgctxt "#30015"
-msgid "DVR Points:"
+msgid "DVR Credit:"
 msgstr ""
 
 msgctxt "#30016"
@@ -85,13 +85,33 @@ msgid "Your account has expired, visit www.ustvnow.com"
 msgstr ""
 
 msgctxt "#30017"
-msgid "Account created on:"
+msgid "Account Information:"
 msgstr ""
 
 msgctxt "#30018"
-msgid "Account expires on:"
+msgid "Subscription expires - "
 msgstr ""
 
 msgctxt "#30019"
-msgid "Insufficient DVR points, visit www.ustvnow.com"
+msgid "Insufficient DVR credits, visit www.ustvnow.com"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Subscription plan - "
+msgstr ""
+
+msgctxt "#30021"
+msgid "DVR credits updated"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Email requires Activation, visit www.ustvnow.com"
+msgstr ""
+
+msgctxt "#30023"
+msgid "%s Recording Failed!"
+msgstr ""
+
+msgctxt "#30024"
+msgid "%s Recording Successful"
 msgstr ""

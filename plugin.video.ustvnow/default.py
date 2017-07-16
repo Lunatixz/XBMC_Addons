@@ -39,53 +39,43 @@ USER_EMAIL   = REAL_SETTINGS.getSetting('User_Email')
 PASSWORD     = REAL_SETTINGS.getSetting('User_Password')
 LAST_TOKEN   = REAL_SETTINGS.getSetting('User_Token')
 LAST_PASSKEY = REAL_SETTINGS.getSetting('User_Paskey')
-USER_QUALITY = int(REAL_SETTINGS.getSetting('Quality'))+1
-RECD_QUALITY = {1:'filename_low',2:'filename_med',3:'filename_high',4:'filename_smil'}[USER_QUALITY]
-STRM_QUALITY = {1:{'width':600 ,'height':320},2:{'width':640,'height':480},3:{'width':1280,'height':720},4:{'width':1280,'height':720}}[USER_QUALITY]
 DEBUG        = REAL_SETTINGS.getSetting('Enable_Debugging') == 'true'
 PTVL_RUN     = xbmcgui.Window(10000).getProperty('PseudoTVRunning') == 'True'
 BASEURL      = 'http://m-api.ustvnow.com/'
 BASEMOB      = 'http://mc.ustvnow.com/'
 IMG_PATH     = os.path.join(ADDON_PATH,'resources','images')
 IMG_HTTP     = BASEMOB + 'gtv/1/live/viewposter?srsid='
+IMG_MOVIE    = 'http://tvdata.ustvnow.com/movieposters/'
+IMG_TV       = 'http://tvdata.ustvnow.com/tvbanners/'
+IMG_POSTER   = 'http://m.poster.static-ustvnow.com/'
+IMG_POSTER_RE= 'http://m.reimages.static-ustvnow.com/'
+IMG_SNAPSHOT = 'http://m.snapshot.static-ustvnow.com/%s/high'
+IMG_CHLOGO   = 'http://m.ustvnow.com/images/%s.png'
 COOKIE_JAR   = xbmc.translatePath(os.path.join(SETTINGS_LOC, "cookiejar.lwp"))
 MEDIA_TYPES  = {'SP':'video','SH':'episode','EP':'episode','MV':'movie'}
 FREE_CHANS   = ['CW','ABC','FOX','PBS','CBS','NBC','MY9']
+
 CHAN_NAMES   = {'ABC':'ABC','AMC':'AMC','Animal Planet':'Animal Planet','Bravo':'Bravo','CBS':'CBS','CNBC':'CNBC','CW':'CW','Comedy Central':'Comedy Central','Discovery Channel':'Discovery Channel','ESPN':'ESPN',
                 'FOX':'FOX','FX':'FX','Fox News Channel':'Fox News','Freeform':'Freeform','MSNBC':'MSNBC','NBC':'NBC','National Geographic Channel':'National Geographic','Nickelodeon':'Nickelodeon','PBS':'PBS',
                 'SPIKE TV':'SPIKE TV','SundanceTV':'SundanceTV','Syfy':'Syfy',
                 'AE':'A&E','My9':'MY9','BBCA':'BBC America','ESPN2':'ESPN 2','NBCSNHD':'NBCSN','The Learning Channel':'TLC','Universal HD':'Universal','USA':'USA Network','SUNDHD':'SundanceTV'}
+
 USTVNOW_MENU = [("Live"      , '', 0),
                 ("Schedules" , '', 1),
                 ("Recordings", '', 2),
-                ("Guide"     , '', 3)]
+                ("Guide"     , '', 3),
+                ("Featured"  , '', 5)]
                 
 def unescape(string):
     parser = HTMLParser.HTMLParser()
-    string = string.decode('iso-8859-1')
     return parser.unescape(string)
  
 def log(msg, level=xbmc.LOGDEBUG):
     if DEBUG == True:
         if level == xbmc.LOGERROR:
             msg += ' ,' + traceback.format_exc()
-        xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + stringify(msg), level)
+        xbmc.log(ADDON_ID + '-' + ADDON_VERSION + '-' + msg, level)
         
-def stringify(string):
-    if isinstance(string, list):
-        string = (string[0])
-    elif isinstance(string, (int, float, long, complex, bool)):
-        string = str(string) 
-    
-    if isinstance(string, basestring):
-        if not isinstance(string, unicode):
-            string = unicode(string, 'utf-8')
-        elif isinstance(string, unicode):
-            string = string.encode('ascii', 'ignore')
-        else:
-            string = string.encode('utf-8', 'ignore')
-    return string
-
 def inputDialog(heading=ADDON_NAME, default='', key=xbmcgui.INPUT_ALPHANUM, opt=0, close=0):
     retval = xbmcgui.Dialog().input(heading, default, key, opt, close)
     if len(retval) > 0:
@@ -174,16 +164,16 @@ class USTVnow():
                     loginlink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/live/login', form_data={'username':user,'password':password,'device':'gtv','redir':'0'}, headers=header_dict).content.encode("utf-8").rstrip())
                     '''{u'token': u'', u'result': u'success'}'''
                     if loginlink and 'token' in loginlink and loginlink['result'].lower() == 'success':
-                        self.token = loginlink['token']
                         log('login, creating new token')
+                        self.token = loginlink['token']
                         REAL_SETTINGS.setSetting('User_Token',self.token)          
                         
                         #passkey
                         dvrlink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/live/viewdvrlist', form_data={'token':self.token}, headers=header_dict).content.encode("utf-8").rstrip())
                         '''{u'globalparams': {u'passkey': u''}, u'results': []}'''
                         if dvrlink and 'globalparams' in dvrlink:
-                            self.passkey = dvrlink['globalparams']['passkey']
                             log('login, creating new passkey')
+                            self.passkey = dvrlink['globalparams']['passkey']
                             REAL_SETTINGS.setSetting('User_Paskey',self.passkey)
                     else:
                         raise Exception
@@ -193,26 +183,36 @@ class USTVnow():
                     '''{u'status': u'success', u'data': {u'username': u'', u'need_account_activation': False, u'plan_id': 1, u'language': u'en', u'plan_free': 1, u'sub_id': u'7', u'lname': u'', u'currency': u'USD', u'points': 1, u'need_account_renew': False, u'fname': u'', u'plan_name': u'Free Plan'}}'''
                     log('login, checking user account')
                     if userlink and 'data' in userlink and userlink['status'].lower() == 'success':
-                        REAL_SETTINGS.setSetting('User_Activated',str(userlink['data']['need_account_activation'] == False))
-                        REAL_SETTINGS.setSetting('User_isFree',str(userlink['data']['plan_free'] == 1))
-                        REAL_SETTINGS.setSetting('User_DVRpoints',str(userlink['data']['points']))
+                        REAL_SETTINGS.setSetting('User_Plan'      ,userlink['data']['plan_name'])
+                        expires = 'Never' if userlink['data']['plan_free'] == 1 else ''
+                        REAL_SETTINGS.setSetting('User_Expires'   ,'%s'%expires)
+                        REAL_SETTINGS.setSetting('User_isFree'    ,str(userlink['data']['plan_free'] == 1))
+                        REAL_SETTINGS.setSetting('User_DVRpoints' ,str((userlink['data']['points']) or 0))
                         xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30006) + userlink['data']['fname'], ICON, 4000)
+                        
                         if userlink['data']['need_account_renew'] == True:
                             xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30016) + userlink['data']['fname'], ICON, 4000)
-                            
+                        elif userlink['data']['need_account_activation'] == True:
+                            xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30022) + userlink['data']['fname'], ICON, 4000)
+                        else: 
+                            if REAL_SETTINGS.getSetting('User_DVRpoints') != REAL_SETTINGS.getSetting('Last_DVRpoints'):
+                                REAL_SETTINGS.setSetting('Last_DVRpoints',REAL_SETTINGS.getSetting('User_DVRpoints'))
+                                xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30021) + userlink['data']['fname'], ICON, 4000)
+                                
                         #check subscription
-                        sublink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/live/getaccountsubscription', form_data={'username':user,'customerkey':self.custkey}, headers=header_dict).content.encode("utf-8").rstrip())
-                        '''{u'username': u'', u'billingDatetime': u'', u'currency': u'USD', u'cgaccountstatusreason': u'', u'invoicehistory': u'', u'ocaccountstatus': u'Account active', u'ccLastFour': u'', u'lname': u'', u'x-cg-acnt-USD': False, u'fname': u'', u'sub_info': {u'cost': 0, u'plan': {u'sub_group': 4, u'plan_id': 1, u'name': u'Free Plan', u'language': u'en', u'date_expire': u'0000-00-00', u'sub_id': 7, u'price': 0, u'currency': u'USD', u'plan_code': u'7_FREETRIAL', 
-                            u'details': u'This plan lets you receive all major US terrestrial stations (ABC, CBS, CW, FOX, NBC, PBS).  You can later upgrade to a paid plan with more channels and DVR.'}, u'packages': []}, u'pendinginvoices': u'', u'cgbillingstatus': u'', u'dvrpoints': 1, u'plans': {u'10': {u'price': 15, u'name': u'1 Week All Channel Plan $15 ($2.14/day)', 
-                            u'details': u'1 Week pass for all channels (No DVR)'}, u'23': {u'price': 19, u'name': u'All Channel Promo Plan $19/mo first 3 months', 
-                            u'details': u'Monthly subscription for all channels. This promotional price is for the first three months after which it will renew at $29. This plan automatically renews each month but you can cancel anytime and will not be billed again when your current 30 day period has expired. '}, u'31': {u'price': 29, u'name': u'All Channel Promo Plan w/DVR $29/mo first 3 months', 
-                            u'details': u'Monthly subscription for all channels. This promotional price is for the first three months after which it will renew at $39. This plan automatically renews each month but you can cancel anytime and will not be billed again when your current 30 day period has expired.'}, u'7': {u'price': 0, u'name': u'Free Plan', 
-                            u'details': u'This plan lets you receive all major US terrestrial stations (ABC, CBS, CW, FOX, NBC, PBS).  You can later upgrade to a paid plan with more channels and DVR.'}, u'9': {u'price': 0.00, u'name': u'3 Day All Channel Plan $6.99 ($2.33/day)', 
-                            u'details': u'3 Day pass for all channels (No DVR)'}, u'8': {u'price': 2.99, u'name': u'1 Day All Channel Plan $2.99', 
-                            u'details': u'24 hour pass for all channels (No DVR)'}}, u'cgredirectUrl': u'', u'cgaccountstatus': False, u'isfacebookuser': False, u'cgkey': u'', u'ocaccountstatuscode': 0, u'packages': [], u'subscription': u'Free Plan', u'language': u'en', u'sub_id': u'7', u'dateopened': u'December 01, 2000', u'canceledDatetime': u'', u'cgbillingmethod': u''}'''
-                        if sublink:
-                            REAL_SETTINGS.setSetting('User_Expires'  ,str(sublink['sub_info']['date_expire']))
-                            REAL_SETTINGS.setSetting('User_Created'  ,str(sublink['sub_info']['dateopened']))
+                        if self.custkey != 0:
+                            sublink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/live/getaccountsubscription', form_data={'username':user,'customerkey':self.custkey}, headers=header_dict).content.encode("utf-8").rstrip())
+                            '''{u'username': u'', u'billingDatetime': u'', u'currency': u'USD', u'cgaccountstatusreason': u'', u'invoicehistory': u'', u'ocaccountstatus': u'Account active', u'ccLastFour': u'', u'lname': u'', u'x-cg-acnt-USD': False, u'fname': u'', u'sub_info': {u'cost': 0, u'plan': {u'sub_group': 4, u'plan_id': 1, u'name': u'Free Plan', u'language': u'en', u'date_expire': u'0000-00-00', u'sub_id': 7, u'price': 0, u'currency': u'USD', u'plan_code': u'7_FREETRIAL', 
+                                u'details': u'This plan lets you receive all major US terrestrial stations (ABC, CBS, CW, FOX, NBC, PBS).  You can later upgrade to a paid plan with more channels and DVR.'}, u'packages': []}, u'pendinginvoices': u'', u'cgbillingstatus': u'', u'dvrpoints': 1, u'plans': {u'10': {u'price': 15, u'name': u'1 Week All Channel Plan $15 ($2.14/day)', 
+                                u'details': u'1 Week pass for all channels (No DVR)'}, u'23': {u'price': 19, u'name': u'All Channel Promo Plan $19/mo first 3 months', 
+                                u'details': u'Monthly subscription for all channels. This promotional price is for the first three months after which it will renew at $29. This plan automatically renews each month but you can cancel anytime and will not be billed again when your current 30 day period has expired. '}, u'31': {u'price': 29, u'name': u'All Channel Promo Plan w/DVR $29/mo first 3 months', 
+                                u'details': u'Monthly subscription for all channels. This promotional price is for the first three months after which it will renew at $39. This plan automatically renews each month but you can cancel anytime and will not be billed again when your current 30 day period has expired.'}, u'7': {u'price': 0, u'name': u'Free Plan', 
+                                u'details': u'This plan lets you receive all major US terrestrial stations (ABC, CBS, CW, FOX, NBC, PBS).  You can later upgrade to a paid plan with more channels and DVR.'}, u'9': {u'price': 0.00, u'name': u'3 Day All Channel Plan $6.99 ($2.33/day)', 
+                                u'details': u'3 Day pass for all channels (No DVR)'}, u'8': {u'price': 2.99, u'name': u'1 Day All Channel Plan $2.99', 
+                                u'details': u'24 hour pass for all channels (No DVR)'}}, u'cgredirectUrl': u'', u'cgaccountstatus': False, u'isfacebookuser': False, u'cgkey': u'', u'ocaccountstatuscode': 0, u'packages': [], u'subscription': u'Free Plan', u'language': u'en', u'sub_id': u'7', u'dateopened': u'December 01, 2000', u'canceledDatetime': u'', u'cgbillingmethod': u''}'''
+                            if sublink:
+                                REAL_SETTINGS.setSetting('User_Expires'  ,str(sublink['sub_info']['date_expire']))
+                                REAL_SETTINGS.setSetting('User_Created'  ,str(sublink['sub_info']['dateopened']))
                     else:
                         raise Exception
                     self.net.save_cookies(COOKIE_JAR)
@@ -232,7 +232,7 @@ class USTVnow():
                         u'connectorid': u'SH011581290000', u'ut_start': 1498867200, u'streamname': u'00000WXYZustvnow', u'episode_title': u'', u'synopsis': 
                         u'A vibrating mat that helps calm babies.', u't': 1, u'edgetypes': 7, u'imgmark': u'live', u'content_id': u'EP011581290171', u'order': 1, 
                         u'displayorder': 1}'''
-                    self.cache.set(ADDON_NAME + '.channelguide', channels, expiration=datetime.timedelta(minutes=15))
+                    self.cache.set(ADDON_NAME + '.channelguide', channels, expiration=datetime.timedelta(minutes=10))
                     self.channels = self.cache.get(ADDON_NAME + '.channelguide'), 
                 
                 self.upcoming = self.cache.get(ADDON_NAME + '.upcoming')
@@ -245,7 +245,7 @@ class USTVnow():
                         u'auth': None, u'orig_air_date': None, u'dvrtimertype': 0, u'scode': u'amchd', u'prgsvcid': 10021, u'runtime': 10800, u'connectorid': u'MV000371790000', 
                         u'episode_title': u'', u'synopsis': u'An innocent man must evade the law as he pursues a killer.', u'event_inprogress': 1, u'ut_start': 1499009400, 
                         u'content_allowed': False, u'imgmark': u'live', u'content_id': u'MV000371790000', u'displayorder': 100}''' 
-                    self.cache.set(ADDON_NAME + '.upcoming', upcoming, expiration=datetime.timedelta(minutes=15))
+                    self.cache.set(ADDON_NAME + '.upcoming', upcoming, expiration=datetime.timedelta(minutes=10))
                     self.upcoming = self.cache.get(ADDON_NAME + '.upcoming')
 
                 self.recorded = self.cache.get(ADDON_NAME + '.recorded')
@@ -264,7 +264,7 @@ class USTVnow():
                         recorded = dvrlink['results']
                     else:
                         recorded = (json.loads(self.net.http_POST(BASEURL + 'gtv/1/live/viewdvrlist', form_data={'token':self.token}, headers=header_dict).content.encode("utf-8").rstrip()))['results']
-                    self.cache.set(ADDON_NAME + '.recorded', recorded, expiration=datetime.timedelta(minutes=15))
+                    self.cache.set(ADDON_NAME + '.recorded', recorded, expiration=datetime.timedelta(minutes=10))
                     self.recorded = self.cache.get(ADDON_NAME + '.recorded')
                 return True
             except Exception,e:
@@ -278,7 +278,7 @@ class USTVnow():
             #firstrun wizard
             if yesnoDialog(LANGUAGE(30008),no=LANGUAGE(30009), yes=LANGUAGE(30010)):
                 user     = inputDialog(LANGUAGE(30001))
-                password = inputDialog(LANGUAGE(30002))
+                password = inputDialog(LANGUAGE(30002),opt=xbmcgui.ALPHANUM_HIDE_INPUT)
                 REAL_SETTINGS.setSetting('User_Email'   ,user)
                 REAL_SETTINGS.setSetting('User_Password',password)
                 return self.login(user, password)
@@ -289,6 +289,10 @@ class USTVnow():
 
     def browseLive(self):
         log('browseLive')
+        if self.channels is None:
+            if self.login(USER_EMAIL, PASSWORD) == False:
+                raise SystemExit
+            
         d = datetime.datetime.utcnow()
         now = datetime.datetime.fromtimestamp(calendar.timegm(d.utctimetuple()))  
         isFree = REAL_SETTINGS.getSetting('User_isFree') == "True"
@@ -296,33 +300,42 @@ class USTVnow():
             name = CHAN_NAMES[channel['stream_code']]
             if isFree == True and name not in FREE_CHANS:
                 continue
-            startime  = datetime.datetime.fromtimestamp(channel['ut_start'])
-            endtime   = startime + datetime.timedelta(seconds=channel['runtime'])
+            startime = datetime.datetime.fromtimestamp(channel['ut_start'])
+            endtime  = startime + datetime.timedelta(seconds=channel['runtime'])
             if endtime > now and startime <= now:
                 label, url, liz = self.buildChannelListItem(name, channel)
                 self.addLink(label, url, 9, liz, len(self.channels))
+
                 
-                
-    def browseSchedules(self):
-        log('browseSchedules')
-        for channel in self.recorded:
-            label, url, liz = self.buildRecordedListItem(CHAN_NAMES[channel['stream_code']])
-            self.addLink(label, url, 10, liz, len(self.recorded))
-        
-        
-    def browseRecordings(self):
+    def browseRecordings(self, recorded=False):
         log('browseRecordings')
+        if self.recorded is None:
+            if self.login(USER_EMAIL, PASSWORD) == False:
+                raise SystemExit
+            
+        d = datetime.datetime.utcnow()
+        now = datetime.datetime.fromtimestamp(calendar.timegm(d.utctimetuple()))  
         for channel in self.recorded:
+            startime  = datetime.datetime.fromtimestamp(channel['ut_start'])
+            endtime   = startime + datetime.timedelta(seconds=channel['runtime'])
+            if endtime > now and (startime <= now or startime > now) and recorded == True:
+                continue
+            elif endtime < now and (startime <= now or startime > now) and recorded == False:
+                continue
             label, url, liz = self.buildRecordedListItem(CHAN_NAMES[channel['stream_code']])
             self.addLink(label, url, 10, liz, len(self.recorded))
     
 
-    def browseGuide(self, name=None):
+    def browseGuide(self, name=None, upcoming=False):
         log('browseGuide')
+        if self.channels is None:
+            if self.login(USER_EMAIL, PASSWORD) == False:
+                raise SystemExit
+            
         d = datetime.datetime.utcnow()
         now = datetime.datetime.fromtimestamp(calendar.timegm(d.utctimetuple()))  
         isFree = REAL_SETTINGS.getSetting('User_isFree') == "True"
-        if name is None:
+        if name is None and upcoming == False:
             collect = []
             for channel in self.channels:
                 name = CHAN_NAMES[channel['stream_code']]
@@ -334,7 +347,7 @@ class USTVnow():
                 icon = (os.path.join(IMG_PATH,'logos','%s.png'%key) or ICON)
                 infoArt  = {"thumb":icon,"poster":icon,"icon":icon,"fanart":FANART}
                 self.addDir("%s"%(key), key, 4, infoArt=infoArt)
-        else:  
+        else:
             for channel in self.channels:
                 if isFree == True and name not in FREE_CHANS:
                     continue
@@ -345,8 +358,26 @@ class USTVnow():
                         label, url, liz = self.buildChannelListItem(name, channel)
                         self.addLink(label, url, 9, liz, len(self.channels))
                 
-                
-    def buildChannelListItem(self, name, channel=None):
+           
+    def browseFeatured(self):
+        log('browseFeatured')
+        if self.upcoming is None:
+            if self.login(USER_EMAIL, PASSWORD) == False:
+                raise SystemExit
+            
+        d = datetime.datetime.utcnow()
+        now = datetime.datetime.fromtimestamp(calendar.timegm(d.utctimetuple()))  
+        isFree = REAL_SETTINGS.getSetting('User_isFree') == "True"
+        for channel in self.upcoming:
+            name = CHAN_NAMES[channel['sname']]
+            startime  = datetime.datetime.fromtimestamp(channel['ut_start'])
+            endtime   = startime + datetime.timedelta(seconds=channel['runtime'])
+            if endtime > now and (startime <= now or startime > now):
+                label, url, liz = self.buildChannelListItem(name, channel, feat=True)
+                self.addLink(label, url, 9, liz, len(self.upcoming))
+
+           
+    def buildChannelListItem(self, name, channel=None, feat=False):
         if channel is None:
             for channel in self.channels:
                 if name == CHAN_NAMES[channel['stream_code']]:
@@ -354,32 +385,42 @@ class USTVnow():
         startime  = datetime.datetime.fromtimestamp(channel['ut_start'])
         endtime   = startime + datetime.timedelta(seconds=channel['runtime'])
         title     = unescape(channel['title'])
-        mediatype = channel['mediatype']
-        if PTVL_RUN:
+        mediatype = (channel.get('mediatype','') or (channel.get('connectorid',''))[:2] or (channel.get('content_id',''))[:2] or 'SP')
+        mtype     = MEDIA_TYPES[mediatype]
+        if PTVL_RUN == True:
             label = name
             mtype = 'video'
+        elif feat == True:
+            label     = '%s %s-%s: %s - %s'%(startime.strftime('%m/%d/%Y'),startime.strftime('%I:%M').lstrip('0'),endtime.strftime('%I:%M %p').lstrip('0'),name,title)       
         else:
             label = '%s: %s - %s'%(startime.strftime('%I:%M %p').lstrip('0'),name,title)
-            mtype = MEDIA_TYPES[mediatype]
         label2    = '%s - %s'%(startime.strftime('%I:%M %p').lstrip('0'),endtime.strftime('%I:%M %p').lstrip('0'))
-        url       = CHAN_NAMES[channel['stream_code']]
+        scode     = (channel.get('stream_code','') or channel.get('sname','') or '')
+        url       = CHAN_NAMES[scode]
         liz       = xbmcgui.ListItem(label)
         infoList  = {"mediatype":mtype,"label":label,"label2":label2,"title":label,
-                     "studio":CHAN_NAMES[channel['stream_code']],"duration":channel['runtime'],"plotoutline":unescape(channel['synopsis']),
+                     "studio":CHAN_NAMES[scode],"duration":channel['runtime'],"plotoutline":unescape(channel['synopsis']),
                      "plot":unescape(channel['description']),"aired":(channel['orig_air_date'] or startime.strftime('%Y-%m-%d'))}
-        poster    = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
-        logo      = (os.path.join(IMG_PATH,'%s.png'%CHAN_NAMES[channel['stream_code']]) or ICON)
+                     
+        if mediatype.startswith('MV'):
+            poster = IMG_MOVIE+channel['prg_img']
+        elif mediatype.startswith(('SH','EP')):
+            poster = IMG_TV+channel['prg_img']
+        else:
+            poster = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
+        thumb      = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
+        logo       = (os.path.join(IMG_PATH,'%s.png'%CHAN_NAMES[scode]) or ICON)
         liz.setInfo(type="Video", infoLabels=infoList)
-        liz.setArt({"thumb":poster,"poster":poster,"icon":logo,"fanart":FANART})
+        liz.setArt({"thumb":thumb,"poster":poster,"icon":logo,"fanart":FANART})
         liz.setProperty("IsPlayable","true")
         liz.setProperty("IsInternetStream","true")
-        liz.addStreamInfo('video',STRM_QUALITY)
         if channel['dvrtimeraction'] == 'add':
-            opt = '@'.join([str(channel['prgsvcid']),channel['event_time']])
-            contextMenu = ('Set Recording'   ,'XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(6)+"&name="+urllib.quote_plus(opt)))
+            opt = '@'.join([str(channel['prgsvcid']),(channel.get('event_time','') or str(channel.get('ut_start','')))])#lazy solution rather then create additional url parameters for this single function.
+            contextMenu = [('Set single recording'   ,'XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(6)+"&name="+urllib.quote_plus(opt))),
+                           ('Set recurring recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(7)+"&name="+urllib.quote_plus(opt)))]
         else:
-            contextMenu = ('Remove Recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['scheduleid']))+"&mode="+str(7)+"&name="+urllib.quote_plus(name)))
-        liz.addContextMenuItems([contextMenu])
+            contextMenu = [('Remove recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['scheduleid']))+"&mode="+str(8)+"&name="+urllib.quote_plus(name)))]
+        liz.addContextMenuItems(contextMenu)
         log('buildChannelListItem, label = ' + label + ', url = ' + url)
         return label, url, liz
     
@@ -389,28 +430,35 @@ class USTVnow():
             if name == CHAN_NAMES[channel['stream_code']] or name == str(channel['scheduleid']):
                 startime  = datetime.datetime.fromtimestamp(channel['ut_start'])
                 endtime   = startime + datetime.timedelta(seconds=channel['runtime'])
-                label     = '%s - %s'%(name,unescape(channel['title']))
-                label2    = '%s - %s'%(startime.strftime('%I:%M %p').lstrip('0'),endtime.strftime('%I:%M %p').lstrip('0'))
+                title     = unescape(channel['title'])
+                label     = '%s %s-%s: %s - %s'%(startime.strftime('%m/%d/%Y'),startime.strftime('%I:%M').lstrip('0'),endtime.strftime('%I:%M %p').lstrip('0'),name,title)
+                label2    = '%s %s-%s'%(startime.strftime('%m/%d/%Y'),startime.strftime('%I:%M').lstrip('0'),endtime.strftime('%I:%M %p').lstrip('0'))
                 url       = str(channel['scheduleid'])
                 liz       = xbmcgui.ListItem(label)
-                mediatype = channel['mediatype']
+                mediatype = (channel.get('mediatype','') or (channel.get('connectorid',''))[:2] or (channel.get('content_id',''))[:2] or 'SP')
                 mtype     = MEDIA_TYPES[mediatype]
                 infoList  = {"mediatype":mtype,"label":label,"label2":label2,"title":label,"studio":CHAN_NAMES[channel['stream_code']],
                              "duration":channel['runtime'],"plotoutline":unescape(channel['synopsis']),"plot":unescape(channel['description']),
                              "aired":(channel['orig_air_date'] or startime.strftime('%Y-%m-%d'))}
-                poster    = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
-                logo      = (os.path.join(IMG_PATH,'%s.png'%CHAN_NAMES[channel['stream_code']]) or ICON)
+                if mediatype.startswith('MV'):
+                    poster = IMG_MOVIE+channel['prg_img']
+                elif mediatype.startswith(('SH','EP')):
+                    poster = IMG_TV+channel['prg_img']
+                else:
+                    poster = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
+                thumb      = IMG_HTTP + str(channel['srsid']) + '&cs=' + channel['callsign'] + '&tid=' + mediatype
+                logo       = (os.path.join(IMG_PATH,'%s.png'%CHAN_NAMES[channel['stream_code']]) or ICON)
                 liz.setInfo(type="Video", infoLabels=infoList)
-                liz.setArt({"thumb":poster,"poster":poster,"icon":logo,"fanart":FANART})
+                liz.setArt({"thumb":thumb,"poster":poster,"icon":logo,"fanart":FANART})
                 liz.setProperty("IsPlayable","true")
                 liz.setProperty("IsInternetStream","true")
-                liz.addStreamInfo('video',STRM_QUALITY)
                 if channel['dvrtimeraction'] == 'add':
-                    opt = '@'.join([str(channel['prgsvcid']),channel['event_time']])
-                    contextMenu = ('Set Recording'   ,'XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(6)+"&name="+urllib.quote_plus(opt)))
+                    opt = '@'.join([str(channel['prgsvcid']),channel['event_time']])#lazy solution rather then create additional url parameters for this single function.
+                    contextMenu = [('Set single recording'   ,'XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(6)+"&name="+urllib.quote_plus(opt))),
+                                   ('Set recurring recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['connectorid']))+"&mode="+str(7)+"&name="+urllib.quote_plus(opt)))]
                 else:
-                    contextMenu = ('Remove Recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['scheduleid']))+"&mode="+str(7)+"&name="+urllib.quote_plus(name)))
-                liz.addContextMenuItems([contextMenu])
+                    contextMenu = [('Remove recording','XBMC.RunPlugin(%s)'%(sys.argv[0]+"?url="+urllib.quote_plus(str(channel['scheduleid']))+"&mode="+str(8)+"&name="+urllib.quote_plus(name)))]
+                liz.addContextMenuItems(contextMenu)
                 log('buildRecordedListItem, label = ' + label + ', url = ' + url)
                 return label, url, liz
     
@@ -418,17 +466,15 @@ class USTVnow():
     def resolveURL(self, url, dvr=False):
         log('resolveURL, url = ' + url + ', dvr = ' + str(dvr))
         isFree  = REAL_SETTINGS.getSetting('User_isFree') == "True"
-        quality = {True:1,False:USER_QUALITY}[isFree]
         if dvr:
             for channel in self.recorded:
                 if url == str(channel['scheduleid']):
                     try:
-                        urllink = json.loads(self.net.http_POST(BASEURL + 'stream/1/dvr/play', form_data={'token':self.token,'key':self.passkey,'scode':channel['scheduleid']}, headers=self.buildHeader()).content.encode("utf-8").rstrip())
-                        print urllink
+                        urllink = json.loads(self.net.http_POST(BASEURL + 'stream/1/dvr/play', form_data={'token':self.token,'key':self.passkey,'scheduleid':channel['scheduleid']}, headers=self.buildHeader()).content.encode("utf-8").rstrip())
                         '''{u'pr': u'll', u'domain': u'ilvc02.ll.ustvnow.com',u'stream': u'http://ilvc02.ll.ustvnow.com/ilv10/pr/xxl/smil:0B64AWHTMUSTVNOW/playlist.m3u8?', 
                             u'streamname': u'0B64AWHTMUSTVNOW', u'tr': u'', u'up': 1, u'pd': 0, u'pl': u'vjs'}'''
                         if urllink and 'stream' in urllink:
-                            return urllink['stream'] if USER_QUALITY == 4 else urllink['stream'].replace('smil:','mp4:').replace('USTVNOW1','USTVNOW').replace('USTVNOW','USTVNOW%d'%USER_QUALITY)
+                            return urllink['stream']
                     except Exception,e:
                         log('resolveURL, Unable to login ' + str(e), xbmc.LOGERROR)
                         xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30005), ICON, 4000)
@@ -441,25 +487,34 @@ class USTVnow():
                         '''{u'pr': u'll', u'domain': u'ilvc02.ll.ustvnow.com',u'stream': u'http://ilvc02.ll.ustvnow.com/ilv10/pr/xxl/smil:0B64AWHTMUSTVNOW/playlist.m3u8?', 
                             u'streamname': u'0B64AWHTMUSTVNOW', u'tr': u'', u'up': 1, u'pd': 0, u'pl': u'vjs'}'''
                         if urllink and 'stream' in urllink:
-                            return urllink['stream'] if USER_QUALITY == 4 else urllink['stream'].replace('smil:','mp4:').replace('USTVNOW1','USTVNOW').replace('USTVNOW','USTVNOW%d'%USER_QUALITY)
+                            return urllink['stream']
                     except Exception,e:
                         log('resolveURL, Unable to login ' + str(e), xbmc.LOGERROR)
                         xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30005), ICON, 4000)
                         raise SystemExit
                     
              
-    def setRecording(self, name, url, remove=False):
-        if remove:
-            remlink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/dvr/updatedvr', form_data={'scheduleid':url,'token':self.token,'action':'add'}, headers=self.buildHeader()).content.encode("utf-8").rstrip())        
-            print reclink
+    def setRecording(self, name, url, remove=False, recurring=False):
+        if remove == True:
+            setlink = (self.net.http_POST(BASEURL + 'gtv/1/dvr/updatedvr', form_data={'scheduleid':url,'token':self.token,'action':'add'}, headers=self.buildHeader()).content.encode("utf-8").rstrip())        
         else:
-            if int(REAL_SETTINGS.getSetting('User_DVRpoints')) == 1:
+            if int(REAL_SETTINGS.getSetting('User_DVRpoints')) <= 1:
                 xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30019), ICON, 4000)
                 return
-            opt = name.split('@')#lazy solution rather then create additional url parameters for this single function.
-            setlink = json.loads(self.net.http_POST(BASEURL + 'gtv/1/dvr/updatedvrtimer', form_data={'connectorid':url,'prgsvcid':opt[0],'eventtime':opt[1],'token':self.token,'action':'add'}, headers=self.buildHeader()).content.encode("utf-8").rstrip())
-            print setlink
-        
+            opt = name.split('@')#lazy solution rather then create additional url parameters for this single function.              
+            if recurring == True:
+                setlink = (self.net.http_POST(BASEURL + 'gtv/1/dvr/updatedvrtimer', form_data={'connectorid':url,'prgsvcid':opt[0],'eventtime':opt[1],'token':self.token,'action':'add'}, headers=self.buildHeader()).content.encode("utf-8").rstrip())
+            else:
+                setlink = (self.net.http_POST(BASEURL + 'gtv/1/dvr/updatedvr'     , form_data={'scheduleid':url,'token':self.token,'action':'add'}, headers=self.buildHeader()).content.encode("utf-8").rstrip())
+        '''<result><status>failure</status><action>add</action></result>'''
+        action = re.findall(r'<action>(.*?)</action>', setlink, re.DOTALL)[0]
+        status = re.findall(r'<status>(.*?)</status>', setlink, re.DOTALL)[0]
+        log('setRecording, action = ' + action + ', status = ' + status)
+        if status == 'failure':
+            xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30023)%action.title(), ICON, 4000)
+            return
+        xbmcgui.Dialog().notification(ADDON_NAME, LANGUAGE(30024)%action.title(), ICON, 4000)
+
     
     def playVideo(self, url, dvr=False):
         log('playVideo, url = ' + url + ', dvr = ' + str(dvr))
@@ -472,14 +527,12 @@ class USTVnow():
 
            
     def addLink(self, name, u, mode, liz, total=0):
-        name = stringify(name)
         log('addLink, name = ' + name)
         u=sys.argv[0]+"?url="+urllib.quote_plus(u)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,totalItems=total)
 
 
     def addDir(self, name, u, mode, infoList=False, infoArt=False):
-        name = stringify(name)
         log('addDir, name = ' + name)
         liz=xbmcgui.ListItem(name)
         liz.setProperty('IsPlayable', 'false')
@@ -515,14 +568,16 @@ log("Name: "+str(name))
 
 if mode==None:  USTVnow().mainMenu()
 elif mode == 0: USTVnow().browseLive()
-elif mode == 1: USTVnow().browseSchedules()
-elif mode == 2: USTVnow().browseRecordings()
+elif mode == 1: USTVnow().browseRecordings()
+elif mode == 2: USTVnow().browseRecordings(recorded=True)
 elif mode == 3: USTVnow().browseGuide()
 elif mode == 4: USTVnow().browseGuide(name)
+elif mode == 5: USTVnow().browseFeatured()
 elif mode == 6: USTVnow().setRecording(name,url)
-elif mode == 7: USTVnow().setRecording(name,url,True)
+elif mode == 7: USTVnow().setRecording(name,url,recurring=True)
+elif mode == 8: USTVnow().setRecording(name,url,remove=True)
 elif mode == 9: USTVnow().playVideo(url)
-elif mode == 10:USTVnow().playVideo(url,True)
+elif mode == 10:USTVnow().playVideo(url,dvr=True)
 
 xbmcplugin.addSortMethod(int(sys.argv[1]) , xbmcplugin.SORT_METHOD_NONE )
 xbmcplugin.addSortMethod(int(sys.argv[1]) , xbmcplugin.SORT_METHOD_LABEL )

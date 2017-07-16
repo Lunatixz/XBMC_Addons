@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="30011">  
-        <setting id="User_Email"       type="text"   label="30001" default="" />
-        <setting id="User_Password"    type="text"   label="30002" default=""     option="hidden"/>
-        <setting                       type="lsep"/>
-        <setting id="User_Activated"   type="text"   label="30013" default=""     enable="false"/>
-        <setting id="User_isFree"      type="text"   label="30014" default=""     enable="false"/>
-        <setting id="User_DVRpoints"   type="text"   label="30015" default=""     enable="false"/>
-        <setting id="User_Created"     type="text"   label="30017" default=""     enable="false"/>
-        <setting id="User_Expires"     type="text"   label="30018" default=""     enable="false"/>
-        <setting id="User_Token"       type="text"   label="30002" default=""     visible="false"/>
-    </category>
-    <category label="30012"> 
-        <setting id="Quality"          type="enum"   label="30004" default="0"    values="Low|Medium|High|HD"/>
-        <setting id="Enable_Debugging" type="bool"   label="30000" default="false" />       
-    </category>
+    <setting id="Enable_Debugging" type="bool"   label="30000" default="false" />
+    <setting id="User_Email"       type="text"   label="30001" default="" />
+    <setting id="User_Password"    type="text"   label="30002" default="" option="hidden"/>
+    <setting                       type="lsep"   label="30017"/>
+    <setting id="User_Plan"        type="text"   label="30020" default="" enable="false"/>
+    <setting id="User_Expires"     type="text"   label="30018" default="" enable="false"/>
+    <setting id="User_Token"       type="text"   label="30002" default="" visible="false"/>
+    <setting id="User_Paskey"      type="text"   label="30002" default="" visible="false"/>
 </settings>
