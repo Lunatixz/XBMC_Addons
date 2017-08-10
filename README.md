@@ -1,0 +1,2 @@
+# XBMC_Addons
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/194feeb2fc00464fb9037710877d93c6)](https://www.codacy.com/app/pseudotvlive/XBMC_Addons?utm_source=github.com&utm_medium=referral&utm_content=Lunatixz/XBMC_Addons&utm_campaign=badger)
