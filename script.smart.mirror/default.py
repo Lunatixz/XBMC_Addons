@@ -19,7 +19,7 @@
 import threading, random, datetime, time
 import re, os, sys
 import json, urllib, requests, feedparser
-import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 
 # Plugin Info
 ADDON_ID = 'script.smart.mirror'
@@ -80,7 +80,7 @@ class MIRROR(xbmcgui.WindowXMLDialog):
             
             
     def clearProperty(self, str):
-        xbmcgui.Window(10000).clearProperty(str)    
+        xbmcgui.Window(10000).clearProperty(str)
 
         
     def fillGreeting(self):
@@ -129,7 +129,7 @@ class MIRROR(xbmcgui.WindowXMLDialog):
                 pass
         
         
-myMIRROR = MIRROR("mirror.xml", ADDON_PATH, 'default')
+myMIRROR = MIRROR("mirror_horizontal.xml", ADDON_PATH, 'default')
 myMIRROR.doModal()
 del myMIRROR
 # http://hosted2.ap.org/APDEFAULT/APNewsFeeds feedparser
@@ -138,3 +138,8 @@ del myMIRROR
 # custom fonts todo
 # custom icons todo
 # user settings, rss feeds, weather source?, user name, 24/12 clock
+# todo user select horizontal and vertical
+# 720 skin
+# media labels, ie playing title, poster, progress?
+# other Kodi stats? recently added?
+# trakt, sonarr, sickbeard, sabnzbd, couchpotato, headphone intergration ?
