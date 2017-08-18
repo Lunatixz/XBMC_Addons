@@ -16,63 +16,46 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#45001"
-msgid "Debugging"
-msgstr ""
-
-msgctxt "#44001"
-msgid "Playback"
-msgstr ""
-
-msgctxt "#44002"
-msgid "Play using UPNP"
-msgstr ""
-
-msgctxt "#42004"
-msgid "Options:"
-msgstr ""
-
-msgctxt "#44003"
-msgid "Play Direct Link [Faster playback but tokens expire]"
-msgstr ""
-
-msgctxt "#42009"
-msgid "Enable Metadata w/Trakt scrobbling [Slower navigation]"
-msgstr ""
-
-msgctxt "#42008"
-msgid "Enable Cache [Fast navigation]"
-msgstr ""
-
-msgctxt "#42097"
-msgid "Library Integration"
-msgstr ""
-
-msgctxt "#42001"
-msgid "General"
-msgstr ""
-
-msgctxt "#42002"
-msgid "Navigate to m.playon.tv in a browser to get the resolved ip."
-msgstr ""
-
-msgctxt "#42003"
-msgid "Playon Server and port"
-msgstr ""
-
-msgctxt "#42005"
-msgid "Browse UPNP and select 'Playon:' folder"
-msgstr ""
-
-msgctxt "#42006"
-msgid "PlayOn UPNP ID"
-msgstr ""
-
-msgctxt "#42007"
+msgctxt "#30000"
 msgid "Enable Debugging [Log errors]"
 msgstr ""
 
-msgctxt "#42010"
-msgid "Select 'Playon: Server', Click (OK)"
+msgctxt "#30001"
+msgid "Navigate to m.playon.tv in a browser to get the resolved IP."
 msgstr ""
 
+msgctxt "#30002"
+msgid "Playon IP:Port"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Preferred Playback Method"
+msgstr ""
+
+msgctxt "#30004"
+msgid "UPNP Server"
+msgstr ""
+
+msgctxt "#30005"
+msgid ""
+msgstr ""
+
+msgctxt "#30010"
+msgid "Something Went Wrong..."
+msgstr ""
+
+msgctxt "#30011"
+msgid "Connect to PlayOn: %s"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Please Check Playon Server and IP:Port settings."
+msgstr ""
+
+msgctxt "#30013"
+msgid "Found Playon UPNP Server"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Navigate to UPNP, locate Playon Server"
+msgstr ""
