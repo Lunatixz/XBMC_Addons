@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Unsplash Photo ScreenSaver.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib, urllib2, socket, random
+import urllib, urllib2, socket, random, itertools
 import xbmc, xbmcaddon, xbmcvfs, xbmcgui
 
 # Plugin Info
@@ -28,16 +28,25 @@ ADDON_PATH     = (REAL_SETTINGS.getAddonInfo('path').decode('utf-8'))
 SETTINGS_LOC   = REAL_SETTINGS.getAddonInfo('profile').decode('utf-8')
 ENABLE_KEYS    = REAL_SETTINGS.getSetting("Enable_Keys") == 'true'
 KEYWORDS       = urllib.quote_plus(REAL_SETTINGS.getSetting("Keywords").encode("utf-8"))
-PHOTO_TYPE     = ['featured','random'][int(REAL_SETTINGS.getSetting("PhotoType"))]
+USER           = REAL_SETTINGS.getSetting("User").encode("utf-8").replace('@','')
+COLLECTION     = REAL_SETTINGS.getSetting("Collection").encode("utf-8")
+PHOTO_TYPE     = ['featured','random','user','collection'][int(REAL_SETTINGS.getSetting("PhotoType"))]
 BASE_URL       = 'https://source.unsplash.com'
-URL_PARAMS     = '/%s/1920x1200'%PHOTO_TYPE
-KEY_PARAMS     = '/?%s'%KEYWORDS
-IMAGE_URL      = BASE_URL + URL_PARAMS + KEY_PARAMS if ENABLE_KEYS else BASE_URL + URL_PARAMS
-KODI_MONITOR   = xbmc.Monitor()
+URL_PARAMS     = '/%s'%PHOTO_TYPE
 TIMER          = [30,60,120,240][int(REAL_SETTINGS.getSetting("RotateTime"))]
 ANIMATION      = 'okay' if REAL_SETTINGS.getSetting("Animate") == 'true' else 'nope'
-TIME           = REAL_SETTINGS.getSetting("Time") == 'true'
+TIME           = 'okay' if REAL_SETTINGS.getSetting("Time") == 'true' else 'nope'
+IMG_CONTROLS   = [30000,30001]
+CYC_CONTROL    = itertools.cycle(IMG_CONTROLS).next
 
+if PHOTO_TYPE in ['featured','random']:
+    IMAGE_URL  = BASE_URL + URL_PARAMS + '/1920x1200/?%s'%KEYWORDS if ENABLE_KEYS else BASE_URL + URL_PARAMS
+elif PHOTO_TYPE == 'user':
+    IMAGE_URL  = BASE_URL + URL_PARAMS + '/%s/1920x1200' %USER
+else:
+    IMAGE_URL  = BASE_URL + URL_PARAMS + '/%s/1920x1200' %COLLECTION
+    
+KODI_MONITOR   = xbmc.Monitor()
 class GUI(xbmcgui.WindowXMLDialog):
     def __init__( self, *args, **kwargs ):
         self.isExiting = False
@@ -49,19 +58,32 @@ class GUI(xbmcgui.WindowXMLDialog):
     def onInit( self ):
         self.winid = xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
         self.winid.setProperty('unsplash_animation', ANIMATION)
-        self.imageControl = self.getControl(30000)
-        self.timeControl  = self.getControl(30001)
-        self.timeControl.setVisible(TIME)
+        self.winid.setProperty('unsplash_time', TIME)
         self.startRotation()
+
         
+    def setImage(self, id):
+        image = self.openURL(IMAGE_URL)
+        image = image if len(image) > 0 else self.openURL(IMAGE_URL)
+        self.getControl(id).setImage(image)
         
+
     def startRotation(self):
+        self.currentID = IMG_CONTROLS[0]
+        self.nextID    = IMG_CONTROLS[1]
+        self.setImage(self.currentID)
         while not KODI_MONITOR.abortRequested():
-            self.imageControl.setImage(self.openURL(IMAGE_URL))
-            if KODI_MONITOR.waitForAbort(TIMER) == True or self.isExiting == True:
+            self.getControl(self.nextID).setVisible(False)
+            self.getControl(self.currentID).setVisible(True)
+            self.nextID    = self.currentID
+            self.currentID = CYC_CONTROL()
+            if KODI_MONITOR.waitForAbort(int(TIMER//2)) == True or self.isExiting == True:
                 break
-        
-        
+            self.setImage(self.currentID)#pre-cache next image
+            if KODI_MONITOR.waitForAbort(int(TIMER//2)) == True or self.isExiting == True:
+                break
+
+
     def onAction( self, action ):
         self.isExiting = True
         self.close()
@@ -69,6 +91,7 @@ class GUI(xbmcgui.WindowXMLDialog):
         
     def openURL(self, url):
         try:
+            self.log("openURL url = " + url)
             request = urllib2.Request(url)
             request.add_header('User-Agent','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11')
             page = urllib2.urlopen(request, timeout = 15)
