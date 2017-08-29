@@ -57,46 +57,64 @@ def setProperty(str1, str2):
 
 def clearProperty(str):
     xbmcgui.Window(10000).clearProperty((str))
+   
+class Monitor(xbmc.Monitor):
+    def __init__(self, *args, **kwargs):
+        self.pendingChange = False
+
+        
+    def onSettingsChanged(self):
+        log('onSettingsChanged')
+        self.pendingChange = True
+
         
 class Service():
     def __init__(self):
         log('__init__')
-        self.myMonitor = xbmc.Monitor()
-        self.start()
+        self.myMonitor = Monitor()
+        self.startService()
         
         
-    def start(self):
-        log('start')
+    def startService(self):
+        log('startService')
+        self.checkSettings()
         while not self.myMonitor.abortRequested():
-            self.checkSettings()
+            if self.myMonitor.waitForAbort(self.wait) == True or self.myMonitor.pendingChange == True:
+                log('startService, waitForAbort/pendingChange')
+                break
+                
             # Dont run while playing.
             if xbmc.Player().isPlayingVideo() == True and self.ignore == True:
-                self.myMonitor.waitForAbort(self.wait)
-                continue
-                
-            # Avoid running while settings open.
-            if xbmcgui.getCurrentWindowDialogId() == 10140:
+                log('start, ignore during playback')
                 self.myMonitor.waitForAbort(1)
                 continue
                 
+            # Don't run while setting menu is opened.
+            if xbmcgui.getCurrentWindowDialogId() in [10140,10103]:
+                log('start, settings dialog opened')
+                self.myMonitor.waitForAbort(1)
+                continue
+
             for user in self.userList:
                 self.chkFEED(user)
-                
-            if self.myMonitor.waitForAbort(self.wait) == True:
-                break
-
+                                
+        if self.myMonitor.pendingChange == True:
+            self.startService()
             
+                
     def checkSettings(self):
-        xbmc.sleep(1000)
-        self.wait   = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
+        self.wait = [300,600,900,1800][int(REAL_SETTINGS.getSetting('Wait_Time'))]
         self.ignore = REAL_SETTINGS.getSetting('Not_While_Playing') == 'true'
-        self.userList = []
+        userList = []
         for i in range(1,51):
-            self.userList.append((REAL_SETTINGS.getSetting('FEED%d'%i)).replace('@',''))
-        self.userList = filter(None, self.userList)
-        log('checkSettings, userList = ' + str(self.userList))  
-    
-    
+            userList.append((REAL_SETTINGS.getSetting('FEED%d'%i)).replace('@',''))
+        self.userList = filter(None, userList)
+        self.myMonitor.pendingChange = False
+        log('checkSettings, ignore = '   + str(self.ignore))
+        log('checkSettings, wait = '     + str(self.wait))
+        log('checkSettings, userList = ' + str(self.userList))
+        
+
     def testString(self):
         ''' 
         gen. 140char mock sentence for skin test
@@ -108,18 +126,19 @@ class Service():
         
 
     def cleanString(self, string):
-        return re.sub(r"http\S+", "", string)
+        string = re.sub(r"http\S+", "", string)
+        string = re.sub(r"pic.twitter.com", "", string)
+        return string
         
         
     def correctTime(self, tweetTime):
-        log('correctTime, IN tweetTime = '+tweetTime)
+        log('correctTime, IN tweetTime = '+ tweetTime)
         tweetTime = datetime.datetime.strptime(tweetTime, '%I:%M %p - %d %b %Y')
         is_dst = time.daylight and time.localtime().tm_isdst > 0
         utc_offset = + (time.altzone if is_dst else time.timezone)
-        td_local = datetime.timedelta(seconds=utc_offset-3600)
-        t = tweetTime + td_local
-        tweetTime = t.strftime('%I:%M %p - %d %b %Y').lstrip('0')
-        log('correctTime, OUT tweetTime = '+tweetTime)
+        td_local = tweetTime + datetime.timedelta(seconds=utc_offset-3600)
+        tweetTime = td_local.strftime('%I:%M %p - %d %b %Y').lstrip('0')
+        log('correctTime, OUT tweetTime = '+ tweetTime)
         return tweetTime
         
         
@@ -149,8 +168,8 @@ class Service():
             tweetStats = [tweetStats[x:x+3] for x in xrange(0, len(tweetStats), 3)]
             tweetStats = tweetStats[idx]
             
-            if REAL_SETTINGS.getSetting('%s.%s.time' %(ADDON_ID,user)) != tweetTime:
-                REAL_SETTINGS.setSetting('%s.%s.time'%(ADDON_ID,user),tweetTime)
+            if getProperty('%s.%s.time' %(ADDON_ID,user)) != tweetTime:
+                setProperty('%s.%s.time'%(ADDON_ID,user),tweetTime)
                 ui = gui.GUI("%s.default.xml" %ADDON_ID,ADDON_PATH,"default",params=({'user':user,'icon':twitterPic,'username':twitterAlt,'title':tweetMsg,'time':tweetTime,'stats':tweetStats,'verified':twitterVer}))
                 ui.doModal()
         except Exception,e:
