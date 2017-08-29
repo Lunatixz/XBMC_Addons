@@ -17,9 +17,9 @@
 # along with CBS News.  If not, see <http://www.gnu.org/licenses/>.
 
 # -*- coding: utf-8 -*-
-import os, sys, time, datetime, re, traceback
+import sys, time, datetime, re, traceback
 import urllib, urllib2, socket, json
-import xbmc, xbmcgui, xbmcplugin, xbmcvfs, xbmcaddon
+import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 
 from simplecache import SimpleCache
 
@@ -63,7 +63,7 @@ def getParams():
     return param
                  
 socket.setdefaulttimeout(TIMEOUT)
-class CBSN():
+class CBSN(object):
     def __init__(self):
         log('__init__')
         self.cache = SimpleCache()
@@ -117,15 +117,15 @@ class CBSN():
                     infoLabel  = {"mediatype":"video","label":label,"title":label,"plot":plot,"plotoutline":plotoutline,"genre":"News","duration":duration,"aired":aired,"tag":tags}
                     infoArt    = {"thumb":thumb,"poster":thumb,"icon":ICON,"fanart":FANART}
                     self.addLink(label,path,9,infoLabel,infoArt,len(results['playlist']))
-                except:
-                    pass
+                except Exception,e:
+                    log("buildBrowse, no video media found")
                     
                     
-    def playVideo(self, name, url, list=None):
+    def playVideo(self, name, url, liz=None):
         log('playVideo')
-        if not list:
-            list = xbmcgui.ListItem(name, path=url)
-        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, list)
+        if not liz:
+            liz = xbmcgui.ListItem(name, path=url)
+        xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 
            
     def addLink(self, name, u, mode, infoList=False, infoArt=False, total=0):
