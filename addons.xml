@@ -94,7 +94,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.cbsn" version="10.0.0" name="CBS News" provider-name="Lunatixz">
+<addon id="plugin.video.cbsn" version="10.0.1" name="CBS News" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
@@ -306,7 +306,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.newsy" version="1.0.0" name="Newsy" provider-name="Lunatixz">
+<addon id="plugin.video.newsy" version="1.0.1" name="Newsy" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
@@ -324,7 +324,7 @@
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.newsy</source>
         <website>http://www.newsy.com</website>
         <forum>https://forum.kodi.tv/showthread.php?tid=320402</forum>
-        <news></news>
+        <news>[CR]v1.0.1[CR]- Improved browsing speed</news>
         <assets>
             <icon>resources/images/icon.png</icon>
             <fanart>resources/images/fanart.jpg</fanart>
