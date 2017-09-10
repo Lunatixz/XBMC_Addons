@@ -19,7 +19,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ## JSON Parameters. 
 
-- [Minimum JSON EX.](https://github.com/Lunatixz/XBMC_Addons/raw/ce83a7c794b1d991d087e3a5e102a5b9f9e18c8d/script.module.uepg/resources/example.json)
+- [Minimum JSON EX.](https://github.com/Lunatixz/XBMC_Addons/raw/master/script.module.uepg/resources/example.json)
 
 ### Per channel parameters:
 
