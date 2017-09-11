@@ -54,7 +54,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `channelname`,`channelnumber`,`channellogo`
 
-- `Isfavorite` - Optional channel favorite flag
+- `isfavorite` - Optional channel favorite flag
 
 - `guidedata`  - List of individual programme elements.
 
