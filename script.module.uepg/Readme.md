@@ -8,7 +8,7 @@
 
 ## About
 
-- uEPG features easy Kodi plugin integration using either listitems or a json. 
+- uEPG features easy Kodi plugin integration using either a listitem or json table. 
 The EPG interface is fully customizable, includes genre colors, button tags (ex. "HD"), Favorite channel flagging and a programmable context menu.
 
 ## Controls:
