@@ -17,6 +17,8 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ## Plugin Integration:
 
+- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`. `starttime` can also be supplied based on the current time and duration of each item.
+
 ### URL parameters:
 
 - `skin_path` - Optional path for custom skin
@@ -51,8 +53,6 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - [Minimum JSON Example](https://github.com/Lunatixz/XBMC_Addons/raw/master/script.module.uepg/resources/example.json)
 
 #### Per channel parameters:
-
-- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`.
 
 - `channelname`,`channelnumber`,`channellogo`
 
