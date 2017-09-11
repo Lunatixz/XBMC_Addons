@@ -35,13 +35,13 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 #### URL parameters Examples:
 
 - JSON dump
-xbmc.executebuiltin("RunScript(script.module.uepg,json=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(json.dumps(USTVnow().uEPG())),urllib.quote_plus(json.dumps(sys.argv[0]+"?mode=20")),urllib.quote_plus(json.dumps("7200"))))`
+`xbmc.executebuiltin("RunScript(script.module.uepg,json=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(json.dumps(USTVnow().uEPG())),urllib.quote_plus(json.dumps(sys.argv[0]+"?mode=20")),urllib.quote_plus(json.dumps("7200"))))`
 
 - Property
-xbmc.executebuiltin("RunScript(script.module.uepg,property=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(ustvnow_guidedata),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
+`xbmc.executebuiltin("RunScript(script.module.uepg,property=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(ustvnow_guidedata),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
 
 - ListItem
-xbmc.executebuiltin("RunScript(script.module.uepg,listitem=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(sys.argv[0]+"?mode=20"),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
+`xbmc.executebuiltin("RunScript(script.module.uepg,listitem=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(sys.argv[0]+"?mode=20"),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
 
 ## JSON Parameters. 
 
