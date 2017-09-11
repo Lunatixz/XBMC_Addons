@@ -1,7 +1,7 @@
 ![screenshot](https://github.com/Lunatixz/XBMC_Addons/raw/master/script.module.uepg/icon.png)
 # uEPG developed by Lunatixz
 
-- Warning this project is FORK TO IMPROVE ONLY!. I will not tolerate code cloning, nor abuse of the GNU licence. This project was written to be universally used within Kodi so their is no need to fork for individual plugin use. Please respect the work and effort put into this project. Fork to contribute and/or improve the project.
+- Please only FORK TO IMPROVE. Nothing kills a project quicker then cloning and abuse of the GNU licence. This project was written to be universally used within Kodi. There is no need to fork for individual plugin use. Please respect the work and effort put into this project. Fork to contribute and/or improve the project only. Thank You = )
 
 - [Support forum](https://forum.kodi.tv/showthread.php?tid=321231)
 - [Report Issues](https://github.com/Lunatixz/XBMC_Addons/issues/new)
@@ -16,6 +16,32 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - Navigate using `Up, Down, Left, Right, PageUp, PageDown`. Use `Select, Enter` or `OK` to play selected content. Toggle between fullscreen video and the EPG using `Back, Previous` or `Close`. Open the context menu using your specified context key. Exit the guide by `stopping` the currently playing video and pressing  `Back, Previous` or `Close` twice.
 
 ## Plugin Integration:
+
+### URL parameters:
+
+- `skinPath` - Optional path for custom skin
+
+- `refreshIntvl` - How often uEPG should refresh guidedata (in Seconds).
+
+- `refreshPath` - Path uEPG can use to retrieve updated guidedata (required for JSON dump only). All other applications should use originating plugins path. EX. `plugin.video.ustvnow`.
+ 
+- `json` - url quoted, json dump contain guidedata.
+
+- `property` - `xbmcgui.Window(10000)` property name containing guidedata.
+
+- `listitem` - plugin path that return guidedata listitem.
+
+
+#### URL parameters Examples:
+
+- JSON dump
+xbmc.executebuiltin("RunScript(script.module.uepg,json=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(json.dumps(USTVnow().uEPG())),urllib.quote_plus(json.dumps(sys.argv[0]+"?mode=20")),urllib.quote_plus(json.dumps("7200"))))`
+
+- Property
+xbmc.executebuiltin("RunScript(script.module.uepg,property=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(ustvnow_guidedata),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
+
+- ListItem
+xbmc.executebuiltin("RunScript(script.module.uepg,listitem=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(sys.argv[0]+"?mode=20"),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
 
 ## JSON Parameters. 
 
@@ -60,23 +86,5 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ### Customize Skin:
 
-
-url parmas:
-skinPath
-refreshIntvl (seconds)
-refreshPath
-json
-property
-listitem
-
-required keys:
-
-
-
-optional keys
-isFavorite
-genre - epg color
-label2 - epg tag
-all pvr/file infolabels, infoart
 
 
