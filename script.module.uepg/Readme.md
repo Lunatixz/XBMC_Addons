@@ -27,12 +27,12 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
  
 - `json` - url quoted, json dump contain guidedata.
 
-- `property` - `xbmcgui.Window(10000)` property name containing guidedata.
+- `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
 - `listitem` - plugin path that return guidedata listitem.
 
 
-#### URL parameters Examples:
+#### URL parameter Examples:
 
 - JSON dump
 `xbmc.executebuiltin("RunScript(script.module.uepg,json=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(json.dumps(USTVnow().uEPG())),urllib.quote_plus(json.dumps(sys.argv[0]+"?mode=20")),urllib.quote_plus(json.dumps("7200"))))`
@@ -43,11 +43,11 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - ListItem
 `xbmc.executebuiltin("RunScript(script.module.uepg,listitem=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(sys.argv[0]+"?mode=20"),urllib.quote_plus(json.dumps(sys.argv[0])),urllib.quote_plus(json.dumps("7200”))))`
 
-## JSON Parameters. 
+### Guidedata Parameters. 
 
 - [Minimum JSON EX.](https://github.com/Lunatixz/XBMC_Addons/raw/master/script.module.uepg/resources/example.json)
 
-### Per channel parameters:
+#### Per channel parameters:
 
 - `channelname`,`channelnumber`,`channellogo`
 
@@ -55,7 +55,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `guidedata`  - List of individual programme elements.
 
-### Program element parameters:
+#### Program element parameters:
 
 - `starttime`, `label`
 
@@ -65,7 +65,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `label2` - Optional EPG tag ex. “HD”
 
-### Kodi listitems parameters:
+#### Kodi listitems parameters:
 
 - [ListItem Info DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
 
