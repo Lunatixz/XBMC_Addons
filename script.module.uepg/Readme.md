@@ -70,7 +70,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `thumb`  - Optional but should be included.
 
-#### Extended parameters:
+#### Extended programme parameters:
 
 - [Kodi ListItem Info DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
 
