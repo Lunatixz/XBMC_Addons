@@ -23,7 +23,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `refresh_interval` - How often uEPG should refresh guidedata (in Seconds).
 
-- `refresh_path` - Path uEPG can use to retrieve updated guidedata (required for JSON dump only). All other applications should use originating plugins path. EX. `plugin.video.ustvnow`.
+- `refresh_path` - Path uEPG can use to retrieve updated guidedata (Not required for property type, instead include originating plugins path. EX. `plugin.video.ustvnow`).
  
 - `json` - url quoted, json dump contain guidedata.
 
