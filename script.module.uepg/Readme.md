@@ -60,9 +60,11 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 #### Minimum programme parameters:
 
-- `starttime`, `label`
+- `starttime` - seconds in epoch.
 
 - `url` or `path` - play path
+
+- `label` or `title`
 
 - `runtime` or `duration` - in seconds.
 
