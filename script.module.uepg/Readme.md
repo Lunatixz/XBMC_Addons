@@ -29,7 +29,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
-- `listitem` - plugin path that return guidedata listitem.
+- `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported, ex. ‘starttime` include it as a listitem.property.
 
 
 #### URL parameter Examples:
@@ -91,4 +91,6 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 ## Customize Skin:
 
 Details coming soon...
+
+
 
