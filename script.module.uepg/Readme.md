@@ -17,7 +17,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ## Plugin Integration:
 
-- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`. `starttime` can also be supplied based on the current time and duration of each item.
+- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`. `starttime` can also automatically generate based on the current time and duration of each item (Not recommend for Live Content).
 
 ### URL parameters:
 
