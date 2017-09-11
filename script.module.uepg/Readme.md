@@ -89,10 +89,21 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - Kodi art parameters  
 `["thumb","poster","fanart","banner","landscape","clearart","clearlogo"]`
 
-
 ## Customize Skin:
 
-Details coming soon...
+### Properties:
+
+`$INFO[Window(10000).Property(PluginName)]`   - Originating plugin meta 
+
+`$INFO[Window(10000).Property(PluginIcon)]`   - Originating plugin meta 
+
+`$INFO[Window(10000).Property(pluginAuthor)]` - Originating plugin meta 
+
+`$INFO[Window(10000).Property(Time)`          - Focused shows time range ex: `5:00PM-6:00PM`
+
+`$INFO[Container(40000)`                      - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
 
 
 
+
+More details to come...
