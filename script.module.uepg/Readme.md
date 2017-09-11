@@ -19,11 +19,11 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ### URL parameters:
 
-- `skinPath` - Optional path for custom skin
+- `skin_path` - Optional path for custom skin
 
-- `refreshIntvl` - How often uEPG should refresh guidedata (in Seconds).
+- `refresh_interval` - How often uEPG should refresh guidedata (in Seconds).
 
-- `refreshPath` - Path uEPG can use to retrieve updated guidedata (required for JSON dump only). All other applications should use originating plugins path. EX. `plugin.video.ustvnow`.
+- `refresh_path` - Path uEPG can use to retrieve updated guidedata (required for JSON dump only). All other applications should use originating plugins path. EX. `plugin.video.ustvnow`.
  
 - `json` - url quoted, json dump contain guidedata.
 
@@ -55,7 +55,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `guidedata`  - List of individual programme elements.
 
-#### Program element parameters:
+#### Minimum programme parameters:
 
 - `starttime`, `label`
 
@@ -65,26 +65,27 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `label2` - Optional EPG tag ex. “HD”
 
-#### Kodi listitems parameters:
+- `thumb`  - Optional but should be included.
 
-- [ListItem Info DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
+#### Extended parameters:
 
-- [ListItem Art DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#gad3f9b9befa5f3d2f4683f9957264dbbe)
+- [Kodi ListItem Info DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
 
-- FILE_PARAMS 
+- [Kodi ListItem Art DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#gad3f9b9befa5f3d2f4683f9957264dbbe)
+
+- [Kodi ListItem StreamDetails DOCS.](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#gaf0c020ba8bc205d61e786dfec9111cdc)
+
+- Kodi file parameters 
 `["title","artist","albumartist","genre","year","rating","album","track","duration","comment","lyrics","musicbrainztrackid","musicbrainzartistid","musicbrainzalbumid","musicbrainzalbumartistid","playcount","fanart","director","trailer","tagline","plot","plotoutline","originaltitle","lastplayed","writer","studio","mpaa","cast","country","imdbnumber","premiered","productioncode","runtime","set","showlink","streamdetails","top250","votes","firstaired","season","episode","showtitle","thumbnail","file","resume","artistid","albumid","tvshowid","setid","watchedepisodes","disc","tag","art","genreid","displayartist","albumartistid","description","theme","mood","style","albumlabel","sorttitle","episodeguide","uniqueid","dateadded","size","lastmodified","mimetype","specialsortseason","specialsortepisode"]`
 
-- PVR_PARAMS  
+- Kodi pvr parameters  
 `["title","plot","plotoutline","starttime","endtime","runtime","progress","progresspercentage","genre","episodename","episodenum","episodepart","firstaired","hastimer","isactive","parentalrating","wasactive","thumbnail","rating","originaltitle","cast","director","writer","year","imdbnumber","hastimerrule","hasrecording","recording","isseries"]`
 
-- ART_PARAMS  
+- Kodi art parameters  
 `["thumb","poster","fanart","banner","landscape","clearart","clearlogo"]`
 
 
+## Customize Skin:
 
-
-
-### Customize Skin:
-
-
+Details coming soon...
 
