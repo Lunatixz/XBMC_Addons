@@ -8,7 +8,7 @@
 
 ## About
 
-- uEPG features easy Kodi plugin integration using either listitems or a json dump. 
+- uEPG features easy Kodi plugin integration using either listitems or a json. 
 The EPG interface is fully customizable, includes genre colors, button tags (ex. "HD"), Favorite channel flagging and a programmable context menu.
 
 ## Controls:
@@ -34,7 +34,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 #### URL parameter Examples:
 
-- JSON dump
+- JSON
 
 `xbmc.executebuiltin("RunScript(script.module.uepg,json=%s&refresh_path=%s&refresh_interval=%s)"%(urllib.quote_plus(json.dumps(USTVnow().uEPG())),urllib.quote_plus(json.dumps(sys.argv[0]+"?mode=20")),urllib.quote_plus(json.dumps("7200"))))`
 
