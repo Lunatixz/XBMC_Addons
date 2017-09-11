@@ -93,15 +93,16 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ### Properties:
 
-`$INFO[Window(10000).Property(PluginName)]`   - Originating plugin meta 
+`$INFO[Window(10000).Property(PluginName)]` - Originating plugin meta 
 
-`$INFO[Window(10000).Property(PluginIcon)]`   - Originating plugin meta 
+`$INFO[Window(10000).Property(PluginIcon)]` - Originating plugin meta 
 
 `$INFO[Window(10000).Property(pluginAuthor)]` - Originating plugin meta 
 
-`$INFO[Window(10000).Property(Time)`          - Focused shows time range ex: `5:00PM-6:00PM`
+`$INFO[Window(10000).Property(Time)` - Focused shows time range ex: `5:00PM-6:00PM`
 
-`$INFO[Container(40000)`                      - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
+### Controls:
+`Container(40000)` - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
 
 
 
