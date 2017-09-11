@@ -52,6 +52,8 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 #### Per channel parameters:
 
+- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`.
+
 - `channelname`,`channelnumber`,`channellogo`
 
 - `isfavorite` - Optional channel favorite flag
@@ -99,9 +101,10 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 `$INFO[Window(10000).Property(pluginAuthor)]` - Originating plugin meta 
 
-`$INFO[Window(10000).Property(Time)` - Focused shows time range ex: `5:00PM-6:00PM`
+`$INFO[Window(10000).Property(Time)` - Focused show time range ex: `5:00PM-6:00PM`
 
 ### Controls:
+
 `Container(40000)` - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
 
 
