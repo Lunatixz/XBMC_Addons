@@ -103,11 +103,25 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 `$INFO[Window(10000).Property(Time)` - Focused show time range ex: `5:00PM-6:00PM`
 
+`<onload>SetProperty(uEPG.rowCount,5,10000)</onload>` - EPG row count
+
+`<onload>SetProperty(uEPG.timeCount,3,10000)</onload>` - EPG time row count, ie. 3 = `12:00  12:30  1:00`
+
+`<onload>SetProperty(uEPG.textColor,0xFFFFFFFF,10000)</onload>` - EPG Text Color
+
+`<onload>SetProperty(uEPG.disabledColor,0xFFFFFFFF,10000)</onload>` - EPG No Focus Color
+
+`<onload>SetProperty(uEPG.focusedColor,0xFFFFFFFF,10000)</onload>` - EPG Focus Color
+
+`<onload>SetProperty(uEPG.shadowColor,0xFF000000,10000)</onload>` - EPG Shadow Color
+
+`<onload>SetProperty(uEPG.diffuseColor,0xFF0f85a5,10000)</onload>` - EPG Past Fade Color
+
+`<onload>SetProperty(uEPG.textFont,font12,10000)</onload>` - EPG Font
+
 ### Controls:
 
 `Container(40000)` - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
-
-
 
 
 More details to come...
