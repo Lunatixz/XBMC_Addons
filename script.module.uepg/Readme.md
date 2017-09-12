@@ -124,9 +124,13 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 `Container(40000)` - Listitem Container ex `$INFO[Container(40000).ListItem.Title]`
 
 ### Textures:
+
 `epg-genres\COLOR_ButtonNoFocus.png` - EPG No Focus
+
 `ButtonFocus.png` - EPG Focus
+
 `TimeBar.png`  - EPG Time Bar
+
 `PastFade.png` - EPG Past Time Fade
 
 More details to come...
