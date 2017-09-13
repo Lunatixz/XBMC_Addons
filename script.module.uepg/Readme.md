@@ -31,7 +31,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
-- `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported follow .
+- `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported follow `Custom Listitem parameter substitutions`.
 
 
 #### URL parameter Examples:
@@ -76,8 +76,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 #### Extended programme parameters:
 
-- [ListItem parameter details]
-(https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
+- [ListItem parameter details](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#ga0b71166869bda87ad744942888fb5f14)
 
 - [ListItem Art parameter details](https://codedocs.xyz/xbmc/xbmc/group__python__xbmcgui__listitem.html#gad3f9b9befa5f3d2f4683f9957264dbbe)
 
