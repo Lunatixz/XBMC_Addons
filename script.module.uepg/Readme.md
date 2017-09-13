@@ -27,7 +27,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `refresh_path` - Path uEPG can use to retrieve updated guidedata (Not required for property type, instead include originating plugins path. EX. `plugin.video.ustvnow`).
  
-- `json` - url quoted, json dump contain guidedata.
+- `json` - url quoted, json dump containing guidedata.
 
 - `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
@@ -102,6 +102,8 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 `$INFO[Window(10000).Property(pluginAuthor)]` - Originating plugin meta 
 
 `$INFO[Window(10000).Property(Time)` - Focused show time range ex: `5:00PM-6:00PM`
+
+#### Hard Coded Control Settings:
 
 `<onload>SetProperty(uEPG.rowCount,5,10000)</onload>` - EPG row count
 
