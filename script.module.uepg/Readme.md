@@ -127,12 +127,14 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ### Textures:
 
-`epg-genres\COLOR_ButtonNoFocus.png` - EPG No Focus
+#### Hard Coded Images:
+
+`epg-genres\COLOR_ButtonNoFocus.png` - EPG No Focus, and respective genre colors (see default skin for example). 
 
 `ButtonFocus.png` - EPG Focus
 
 `TimeBar.png`  - EPG Time Bar
 
-`PastFade.png` - EPG Past Time Fade
+`PastFade.png` - EPG Past Fade
 
 More details to come...
