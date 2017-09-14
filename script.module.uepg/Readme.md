@@ -19,6 +19,8 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`. `starttime` can also automatically generate based on the current time and duration of each item (Not recommend for Live content).
 
+### Python Decorators:
+
 ### URL parameters:
 
 - `skin_path` - Optional path for custom skin
@@ -32,8 +34,6 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
 - `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported ex. `starttime` follow `Custom Listitem parameter substitutions`.
-
-#### Python Decorators:
 
 #### URL parameter Examples:
 
