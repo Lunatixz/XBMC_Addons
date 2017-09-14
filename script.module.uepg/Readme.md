@@ -33,6 +33,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported ex. `starttime` follow `Custom Listitem parameter substitutions`.
 
+#### Python Decorators:
 
 #### URL parameter Examples:
 
