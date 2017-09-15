@@ -123,6 +123,8 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 `<onload>SetProperty(uEPG.shadowColor,0xFF000000,10000)</onload>` - EPG Shadow Color
 
+`<onload>SetProperty(uEPG.timeColor,0xFF0f85a5,10000)</onload>` - EPG Timebar Color
+
 `<onload>SetProperty(uEPG.pastColor,0xFF0f85a5,10000)</onload>` - EPG Past Fade Color
 
 `<onload>SetProperty(uEPG.futureColor,0xFF0f85a5,10000)</onload>` - EPG Future Fade Color
