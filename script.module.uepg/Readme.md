@@ -95,7 +95,9 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 `["title","plot","plotoutline","starttime","endtime","runtime","progress","progresspercentage","genre","episodename","episodenum","episodepart","firstaired","hastimer","isactive","parentalrating","wasactive","thumbnail","rating","originaltitle","cast","director","writer","year","imdbnumber","hastimerrule","hasrecording","recording","isseries"]`
 
 #### Custom Listitem parameters
-Includes all -Kodi PVR parameters and below examples
+
+Includes all -Kodi PVR parameters and below examples.
+
 `tagline` = json.dump({'isHD':True,'hasCC':False,'isNew':True})
 
 ## Customize Skin:
