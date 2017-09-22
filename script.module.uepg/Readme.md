@@ -17,7 +17,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 ## Plugin Integration:
 
-- ListItem option does not require (per channel parameters) but it is recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item as a `listitem.property`. `starttime` can also automatically generate based on the current time and duration of each item (Not recommend for Live content).
+- ListItem option does not require (per channel parameters) but it's recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item using the listitem `tagline` property (see `Custom Listitem parameters`). `starttime` can also automatically generate based on the current time and duration of each item (Not recommend for Live content).
 
 ### Python Decorators:
 
@@ -33,7 +33,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 - `property` - `xbmcgui.Window(10000)` property name containing url quoted, json dump guidedata.
 
-- `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported ex. `starttime` follow `Custom Listitem parameter substitutions`.
+- `listitem` - plugin path that return guidedata listitems. Channels as `Directories`, individual programmes as `Links`. *note when a listitem parameter is unsupported ex. `starttime` follow `Custom Listitem parameter`.
 
 #### URL parameter Examples:
 
@@ -85,17 +85,18 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 
 #### Listitem parameter examples:
 
-- Kodi file parameters 
+- Kodi FILE parameters 
 `["title","artist","albumartist","genre","year","rating","album","track","duration","comment","lyrics","musicbrainztrackid","musicbrainzartistid","musicbrainzalbumid","musicbrainzalbumartistid","playcount","fanart","director","trailer","tagline","plot","plotoutline","originaltitle","lastplayed","writer","studio","mpaa","cast","country","imdbnumber","premiered","productioncode","runtime","set","showlink","streamdetails","top250","votes","firstaired","season","episode","showtitle","thumbnail","file","resume","artistid","albumid","tvshowid","setid","watchedepisodes","disc","tag","art","genreid","displayartist","albumartistid","description","theme","mood","style","albumlabel","sorttitle","episodeguide","uniqueid","dateadded","size","lastmodified","mimetype","specialsortseason","specialsortepisode"]`
 
-- Kodi art parameters  
+- Kodi ART parameters  
 `["thumb","poster","fanart","banner","landscape","clearart","clearlogo"]`
 
-- Kodi pvr parameters  
+- Kodi PVR parameters  
 `["title","plot","plotoutline","starttime","endtime","runtime","progress","progresspercentage","genre","episodename","episodenum","episodepart","firstaired","hastimer","isactive","parentalrating","wasactive","thumbnail","rating","originaltitle","cast","director","writer","year","imdbnumber","hastimerrule","hasrecording","recording","isseries"]`
 
-#### Custom Listitem parameter substitutions
-`'comment' = json.dumps({"channelname":"name","channelnumber":number,"channellogo":"logo","label":"title","label2":"HD","startime":startime}))`
+#### Custom Listitem parameters
+Includes all -Kodi PVR parameters
+`tagline` = json.dump({'isHD':True,'hasCC':False,'isNew':True})
 
 ## Customize Skin:
 
