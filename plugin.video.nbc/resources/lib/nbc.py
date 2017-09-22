@@ -18,10 +18,9 @@
 
 # -*- coding: utf-8 -*-
 import sys, time, datetime, re, traceback
-import urllib, urllib2, socket, json, gzip
+import urllib, urllib2, socket, json
 import xbmc, xbmcgui, xbmcplugin, xbmcaddon
 
-from StringIO import StringIO
 from youtube_dl import YoutubeDL
 from simplecache import SimpleCache
 
@@ -84,19 +83,8 @@ class NBC(object):
             cacheResponce = self.cache.get(ADDON_NAME + '.openURL, url = %s'%url)
             if not cacheResponce:
                 request = urllib2.Request(url)
-                request.add_header('Accept-encoding', 'gzip')
-                request.add_header('User-Agent','Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)')
-                responce = urllib2.urlopen(request, timeout = TIMEOUT)
-                log(responce.headers['content-type'])
-                log(responce.headers['content-encoding'])
-                if responce.info().get('content-encoding') == 'gzip':
-                    buf = StringIO(responce.read())
-                    f = gzip.GzipFile(fileobj=buf)
-                    results = f.read()
-                else:
-                    results = responce.read()
-                responce.close()
-                self.cache.set(ADDON_NAME + '.openURL, url = %s'%url, results, expiration=datetime.timedelta(hours=1))
+                responce = urllib2.urlopen(request, timeout = TIMEOUT).read()
+                self.cache.set(ADDON_NAME + '.openURL, url = %s'%url, responce, expiration=datetime.timedelta(hours=1))
             return self.cache.get(ADDON_NAME + '.openURL, url = %s'%url)
         except urllib2.URLError, e:
             log("openURL Failed! " + str(e), xbmc.LOGERROR)
@@ -148,7 +136,7 @@ class NBC(object):
                 seinfo = ('S' + ('0' if seasonNumber < 10 else '') + str(seasonNumber) + 'E' + ('0' if episodeNumber < 10 else '') + str(episodeNumber))
                 label  = '%s - %s'%(showTitle, title) if seasonNumber + episodeNumber == 0 else '%s - %s - %s'%(showTitle, seinfo, title)
                 infoLabels ={"mediatype":"episodes","label":label ,"title":label,"TVShowTitle":showTitle,"plot":plot,"aired":aired,"duration":duration,"season":seasonNumber,"episode":episodeNumber}
-                infoArt    ={"thumb":thumb,"poster":thumb,"fanart":thumb,"icon":ICON,"logo":ICON}
+                infoArt    ={"thumb":thumb,"poster":thumb,"fanart":FANART,"icon":ICON,"logo":ICON}
                 self.addLink(label, path, 9, infoLabels, infoArt, len(items['data']))
                 
             try: next_page = items['links']['next']
@@ -179,7 +167,7 @@ class NBC(object):
                 
                 myURL      = json.dumps({"url":path,"vidID":vidID})
                 infoLabels ={"mediatype":"tvshows","label":showTitle ,"title":showTitle,"TVShowTitle":showTitle,"plot":plot}
-                infoArt    ={"thumb":thumb,"poster":thumb,"fanart":thumb,"icon":ICON,"logo":ICON}
+                infoArt    ={"thumb":thumb,"poster":thumb,"fanart":FANART,"icon":ICON,"logo":ICON}
                 self.addDir(showTitle,myURL,0,infoLabels,infoArt)
 
             try: next_page = items['links']['next']
@@ -194,9 +182,7 @@ class NBC(object):
         items = json.loads(self.openURL(SHOW_URL%myURL['vidID']))
         if items and 'data' in items:
             for item in items['data']['attributes']['videoTypes']:
-                path = myURL['url']+FILTER%('type',urllib2.quote(item))
-                print path
-                self.browseEpisodes(path)
+                self.browseEpisodes(myURL['url']+FILTER%('type',urllib2.quote(item)))
                 
                 
     def playVideo(self, name, url, liz=None):

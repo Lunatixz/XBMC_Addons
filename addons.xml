@@ -248,7 +248,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.nbc" version="1.0.0" name="NBC" provider-name="Lunatixz">
+<addon id="plugin.video.nbc" version="1.0.1" name="NBC" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
@@ -265,7 +265,7 @@
         <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.nbc</source>
         <website>http://nbc.com</website>
-        <news></news>
+        <news>[CR]1.0.1[CR]- Fixed Parsing Error</news>
         <forum>https://forum.kodi.tv/showthread.php?tid=321811</forum>
         <assets>
             <icon>resources/images/icon.png</icon>
