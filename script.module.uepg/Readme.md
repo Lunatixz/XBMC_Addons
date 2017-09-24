@@ -4,7 +4,7 @@
 - Please only FORK TO IMPROVE. Nothing kills a project quicker then cloning and abuse of the GNU licence. This project was written to be universally used within Kodi. There is no need to fork for individual plugin use. Please respect the work and effort put into this project. Fork to contribute and/or improve the project only. Thank You = )
 
 - [Support forum](https://forum.kodi.tv/showthread.php?tid=321231)
-- [Report Issues](https://github.com/Lunatixz/XBMC_Addons/issues/new)
+- [Report Issues / Request Features](https://github.com/Lunatixz/XBMC_Addons/issues/new)
 
 ## About
 
@@ -20,6 +20,7 @@ The EPG interface is fully customizable, includes genre colors, button tags (ex.
 - ListItem option does not require (per channel parameters) but it's recommend. `channelname`,`channelnumber`,`channellogo` can be filled automatically using the listitems `Directory Names`,`Directory Range`,`Originating Plugin Icon`. Its recommend you include these parameters per item using the listitem `tagline` property (see `Custom Listitem parameters`). `starttime` can also automatically generate based on the current time and duration of each item (Not recommend for Live content).
 
 ### Python Decorators:
+Details coming Soon.
 
 ### URL parameters:
 
