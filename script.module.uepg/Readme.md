@@ -24,6 +24,8 @@ Details coming Soon.
 
 ### URL parameters:
 
+- `row_count` - EPG row count (Hardcoded control, must be given before window init).
+
 - `skin_path` - Optional path for custom skin
 
 - `refresh_interval` - How often uEPG should refresh guidedata (in Seconds).
@@ -114,8 +116,6 @@ Includes all -Kodi PVR parameters and below examples.
 `$INFO[Window(10000).Property(Time)` - Focused show time range ex: `5:00PM-6:00PM`
 
 #### Hard Coded Control Settings:
-
-`<onload>SetProperty(uEPG.rowCount,5,10000)</onload>` - EPG row count
 
 `<onload>SetProperty(uEPG.timeCount,3,10000)</onload>` - EPG time row count, ie. 3 = `12:00  12:30  1:00`
 
