@@ -2,7 +2,7 @@
 <addon id="screensaver.google.earth" name="Google Earth" version="1.0.0" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
-        <import addon="script.module.simplecache" version="1.0.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
     </requires>
     <extension point="xbmc.ui.screensaver" library="default.py"/>
     <extension point="xbmc.python.script"  library="default.py"/>
@@ -13,9 +13,10 @@
         <platform>all</platform>
         <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/screensaver.google.earth</source>
         <news></news>
+        <forum>https://forum.kodi.tv/showthread.php?tid=321718</forum>
         <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
+            <icon>resources/images/icon.png</icon>
+            <fanart>resources/images/fanart.jpg</fanart>
             <screenshot>resources/images/screenshot01.png</screenshot>
             <screenshot>resources/images/screenshot02.png</screenshot>
             <screenshot>resources/images/screenshot03.png</screenshot>
