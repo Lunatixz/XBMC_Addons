@@ -153,7 +153,7 @@ class NBC(object):
         if items and 'data' in items:
             for item in items['data']:
                 showTitle = item['attributes']['shortTitle']
-                plot      = item['attributes']['shortDescription'].replace('<p>','').replace('</p>','')
+                plot      = (item['attributes']['shortDescription'] or showTitle).replace('<p>','').replace('</p>','')
                 path      = VIDEO_URL+FILTER%('show',item['id'])
                 vidID     = item['relationships']['aggregates']['data']['id']
 
