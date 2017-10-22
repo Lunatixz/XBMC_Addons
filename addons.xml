@@ -94,6 +94,36 @@
     </extension>
 </addon>
 
+<addon id="plugin.video.cbs" version="1.0.2" name="CBS" provider-name="Lunatixz">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="script.module.simplecache" version="1.0.0"/>
+        <import addon="script.module.youtube.dl" version="17.0.0"/>
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
+
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB"></summary>
+        <description lang="en_GB"></description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <source>https://github.com/Lunatixz/XBMC_Addons/tree/master/plugin.video.cbs</source>
+        <website>http://cbs.com</website>
+        <news></news>
+        <forum>https://forum.kodi.tv/showthread.php?tid=321811</forum>
+        <assets>
+            <icon>resources/images/icon.png</icon>
+            <fanart>resources/images/fanart.jpg</fanart>
+            <screenshot>resources/images/screenshot01.png</screenshot>
+            <screenshot>resources/images/screenshot02.png</screenshot>
+            <screenshot>resources/images/screenshot03.png</screenshot>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="plugin.video.cbsn" version="10.0.1" name="CBS News" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
@@ -789,24 +819,23 @@
     </extension>
 </addon>
 
-<addon id="script.module.pyhdhr" version="0.0.1" name="pyHDHR" provider-name="Lunatixz">
+<addon id="script.module.pyhdhr" version="1.0.0" name="pyHDHR" provider-name="Lunatixz">
     <requires>
-        <import addon="xbmc.python" version="2.24.0" />
-        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="xbmc.python" version="2.25.0" />
     </requires>
     <extension library="lib" point="xbmc.python.module" />
     <extension point="xbmc.addon.metadata">
-        <summary lang="en_US">A Python interface for the HDHomeRun JSON API</summary>
-        <description lang="en_US">A Python interface for the HDHomeRun JSON API</description>
+        <summary lang="en_GB">A Python interface for the HDHomeRun JSON API</summary>
+        <description lang="en_GB">A Python interface for the HDHomeRun JSON API</description>
         <forum>http://forum.kodi.tv</forum>
         <website>https://www.silicondust.com/forum/viewtopic.php?t=42717</website>
         <license>MIT</license>
         <platform>all</platform>
         <source>https://github.com/jumpmanjay/PyHDHR</source>
         <news></news>
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
     </extension>
 </addon>
 
