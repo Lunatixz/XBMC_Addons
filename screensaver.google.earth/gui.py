@@ -64,7 +64,9 @@ class GUI(xbmcgui.WindowXMLDialog):
     def prepareImages(self, results):
         for img in results:
             label = '%s, %s'%(img['country'],img['region']) if len(img['region']) > 0 else '%s'%(img['country'])
-            yield xbmcgui.ListItem(label,thumbnailImage=(img['image']))
+            listitem = xbmcgui.ListItem(label)
+            listitem.setArt({"thumb":img['image'],"poster":img['image']})
+            yield listitem
         
         
     def startRotation(self):
