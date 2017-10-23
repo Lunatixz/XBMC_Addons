@@ -4,8 +4,7 @@
         <import addon="xbmc.python" version="2.25.0"/>
         <import addon="script.module.simplecache" version="1.0.0"/>
         <import addon="script.module.youtube.dl" version="17.0.0"/>
-        <import addon="script.module.beautifulsoup4" version="4.3.2"/>
-        
+        <import addon="script.module.beautifulsoup4" version="4.3.2"/>    
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
