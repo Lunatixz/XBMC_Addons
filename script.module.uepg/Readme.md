@@ -154,3 +154,5 @@ Includes all -Kodi PVR parameters and below examples.
 `FutureFade.png` - EPG Future Fade
 
 More details to come...
+
+control 40001 escape id
