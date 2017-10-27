@@ -114,6 +114,46 @@
     </extension>
 </addon>
 
+<addon id="plugin.video.ares_are_u_listening1" version="1.0.1" name="Ares_Wizard Asshattery" provider-name="Developers for a Nontoxic environment">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</summary>
+        <description lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="plugin.video.ares_are_u_listening2" version="1.0.1" name="Ares_Wizard Asshattery" provider-name="Developers for a Nontoxic environment">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</summary>
+        <description lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
 <addon id="plugin.video.cbs" version="1.0.2" name="CBS" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
