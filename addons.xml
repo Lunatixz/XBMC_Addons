@@ -94,7 +94,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.ares_are_u_listening" version="1.0.3" name="Ares_Wizard Asshattery" provider-name="Developers for a Nontoxic environment">
+<addon id="plugin.video.ares_are_u_listening" version="1.0.3" name="Ares Malware Asshattery" provider-name="Developers for a Nontoxic environment">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
     </requires>
@@ -114,7 +114,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.ares_are_u_listening1" version="1.0.1" name="Ares_Wizard Asshattery" provider-name="Developers for a Nontoxic environment">
+<addon id="plugin.video.ares_are_u_listening1" version="1.0.2" name="Unfollow us!" provider-name="Developers for a Nontoxic environment">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
     </requires>
@@ -134,7 +134,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.ares_are_u_listening2" version="1.0.1" name="Ares_Wizard Asshattery" provider-name="Developers for a Nontoxic environment">
+<addon id="plugin.video.ares_are_u_listening2" version="1.0.2" name="We are toxic" provider-name="Developers for a Nontoxic environment">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
     </requires>
