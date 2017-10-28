@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.video.ares_are_u_listening2" version="1.0.2" name="We are toxic" provider-name="Developers for a Nontoxic environment">
+<addon id="plugin.video.Foo" version="1.0.2" name="Unfollow us!" provider-name="Developers for a Nontoxic environment">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/> 
     </requires>
