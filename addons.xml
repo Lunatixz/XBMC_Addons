@@ -94,46 +94,6 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.ares_are_u_listening" version="1.0.4" name="Ares Malware Asshattery" provider-name="Developers for a Nontoxic environment">
-    <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="default.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</summary>
-        <description lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</description>
-        <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-        <news></news>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="plugin.video.Bar" version="1.0.2" name="We are toxic" provider-name="Developers for a Nontoxic environment">
-    <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="default.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</summary>
-        <description lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</description>
-        <platform>all</platform>
-        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
-        <news></news>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-
 <addon id="plugin.video.cbs" version="1.0.2" name="CBS" provider-name="Lunatixz">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
@@ -260,7 +220,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.Foo" version="1.0.2" name="Unfollow us!" provider-name="Developers for a Nontoxic environment">
+<addon id="plugin.video.game" version="1.0.2" name="Unfollow us!" provider-name="Developers for a Nontoxic environment">
     <requires>
         <import addon="xbmc.python" version="2.25.0"/>
     </requires>
@@ -474,6 +434,26 @@
             <fanart>resources/images/fanart.jpg</fanart>
             <screenshot>resources/images/screenshot01.png</screenshot>
             <screenshot>resources/images/screenshot02.png</screenshot>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="plugin.video.over" version="1.0.2" name="We are toxic" provider-name="Developers for a Nontoxic environment">
+    <requires>
+        <import addon="xbmc.python" version="2.25.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</summary>
+        <description lang="en_GB">Ares_Wizard is harming the Kodi community, Do not support the efforts of this toxic site.</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE. Version 3, June 2007</license>
+        <news></news>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
