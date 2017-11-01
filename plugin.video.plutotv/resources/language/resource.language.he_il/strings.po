@@ -1,0 +1,58 @@
+# Kodi Media Center language file
+# Addon Name: Pluto.TV
+# Addon id: plugin.video.plutotv
+# Addon Provider: Lunatixz
+msgid ""
+msgstr ""
+"Project-Id-Version: plugin.video.plutotv\n"
+"Report-Msgid-Bugs-To: http://forum.kodi.tv/showthread.php?tid=315513\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-11-01 09:03+0200\n"
+"Last-Translator: A. Dambledore\n"
+"Language-Team: Eng2Heb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.0.4\n"
+
+msgctxt "#30000"
+msgid "Enable Debugging [Log errors]"
+msgstr "אפשר מצב איתור באגים"
+
+msgctxt "#30001"
+msgid "Enter User Email"
+msgstr "הזן אי-מייל משתמש"
+
+msgctxt "#30002"
+msgid "Enter User Password"
+msgstr "הזן סיסמת משתמש"
+
+msgctxt "#30004"
+msgid "Some channels not available in your region"
+msgstr "כמה ערוצים אינם זמינים באזורך"
+
+msgctxt "#30005"
+msgid "Select User Region"
+msgstr "בחר אזור המשתמש"
+
+msgctxt "#30006"
+msgid "Welcome Back "
+msgstr "ברוך שובך "
+
+msgctxt "#30007"
+msgid "Invalid User Credentials"
+msgstr "אישורי כניסה לא תקינים"
+
+msgctxt "#30008"
+msgid "Already have a Pluto.TV account?"
+msgstr "כבר יש לך חשבון Pluto.TV?"
+
+msgctxt "#30009"
+msgid "Guest"
+msgstr "אורח"
+
+msgctxt "#30010"
+msgid "Sign-In"
+msgstr "להתחבר"
