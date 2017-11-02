@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="20000">כיוונון</string>
+    <string id="20001"> אפשר כרזות מונפשות [כאשר זמין]</string>
+    <string id="20002">תתעלם מפוסטרים מנגננים</string>
+    <string id="20003">כלול פוסטרים מספריית קודי</string>
+    <string id="20004">ריענון פוסטר</string>
+    <string id="30000">כללי</string>
+    <string id="30001">הכנס פרטי קודי IP:PORT</string>
+    <string id="30002">הכנס פרטי קודי שם משתמש:ססמה</string>
+    <string id="30003">אפשר הפעלה אוטומטית / השהיית הפעלה</string>
+</strings>
