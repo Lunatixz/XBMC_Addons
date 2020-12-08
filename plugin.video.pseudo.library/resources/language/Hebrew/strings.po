@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <strings>
+    <string id="32000">כללי</string>
+    <string id="30002">פתח את מנהל התצורה</string>    
+    <string id="32003">צור NFO's (בקרוב)</string>
+    <string id="32004">ספריית Strm</string>
+    <string id="30310">מגבלת Strm לכל תצורה</string>
+    <string id="34022">הסר strms ישנים לפני יצירת חדשים</string>
+    <string id="32007">מיין את יו-טיוב לתוך תיקיה משלו</string>
+    <string id="30305">הורד תמונות ממוזערות מיו-טיוב /RSS (בקרוב)</string>
+    <string id="32100">שירות</string>
+    <string id="32001">עדכון אוטומטי</string>
+    <string id="32002">עדכן כל (שעות)</string>
+    <string id="32006">השהייה באתחול (שניות)</string>
+    <string id="32005">הפעל בזמן ניגון</string>
+    <string id="34009">הפעל סריקת ספרייה בסיום</string>
+    <string id="34010">נקה את בסיס הנתונים בסיום</string>
+    <string id="34002">נקה תיקיית Strm לפני כל הפעלה</string>
+    <string id="34023">רפרנס לקישור פנימי עבור Strm</string>
+    <string id="34024">מיין Strms לפי</string>
+  </strings>
