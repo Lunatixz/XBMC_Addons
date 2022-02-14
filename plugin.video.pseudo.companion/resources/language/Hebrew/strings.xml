@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <strings>
+    <string id="32000">כללי</string>
+    <string id="32001">אפשר את תכונות התרומות</string>    
+    <string id="32002">תרומה מאושרת:</string>  
+    <string id="32003">הכנס שם משתמש:ססמה לתרומה</string>  
+    <string id="32011">אפשר מצב איתור באגים</string> 
+    <string id="33000">שילוב ספרייה (בקרוב)</string> 
+    <string id="33001">ספריית Strm</string>   
+    <string id="33002">מיין ספריות לפי</string>  
+    <string id="33003">נקה ספריות</string>   
+    <string id="33004">נקה את Strms בכל</string> 
+    <string id="33005">עכב עדכון באיתחול</string>   
+    <string id="33006">עדכן בזמן ניגון</string>   
+  </strings>
