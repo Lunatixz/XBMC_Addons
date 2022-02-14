@@ -1,0 +1,49 @@
+# XBMC Media Center language file
+# Addon Name: Video ScreenSaver
+# Addon id: screensaver.videosaver
+# Addon Provider: Lunatixz
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-11-02 08:06+0200\n"
+"Last-Translator: A. Dambledore\n"
+"Language-Team: Eng2Heb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32001"
+msgid ""
+msgstr ""
+
+msgctxt "#32002"
+msgid "Video Type"
+msgstr "סוג וידאו"
+
+msgctxt "#32003"
+msgid "Video File"
+msgstr "קובץ וידאו"
+
+msgctxt "#32004"
+msgid "Video Folder"
+msgstr "תיקיית וידאו"
+
+msgctxt "#32005"
+msgid "Video Limit"
+msgstr "הגבלת וידאו"
+
+msgctxt "#32006"
+msgid "Randomize"
+msgstr "אקראי"
+
+msgctxt "#32007"
+msgid "Disable Trakt"
+msgstr "בטל Trakt"
+
+msgctxt "#32008"
+msgid "Ignore Keypress (Stop to end)."
+msgstr "התעלם מלחיצות מקלדת (\'עצור\' כדי לסיים)."
